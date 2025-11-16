@@ -102,13 +102,26 @@ class IngestCommand( __.immut.DataclassObject ):
         secret screening.
     '''
 
-    project_name: str = __.tyro.conf.arg(  # pyright: ignore
-        help = "Target project name for ingests/<project-name>/" )
-    source_paths: __.cabc.Sequence[ Location ] = __.tyro.conf.arg(  # pyright: ignore
-        help = "Source file(s) or directory to ingest" )
-    target_base: Location = "ingests"
-    check_secrets: bool = True
-    dry_run: bool = False
+    project_name: __.typx.Annotated[
+        str,
+        __.ddoc.Doc( ''' Target project name for ingestion. ''' ),
+    ]
+    source_paths: __.typx.Annotated[
+        __.cabc.Sequence[ Location ],
+        __.ddoc.Doc( ''' Source file(s) or directory to ingest. ''' ),
+    ]
+    target_base: __.typx.Annotated[
+        Location,
+        __.ddoc.Doc( ''' Base directory for ingestion. ''' ),
+    ] = "ingests"
+    check_secrets: __.typx.Annotated[
+        bool,
+        __.ddoc.Doc( ''' Enable secret detection (warnings only). ''' ),
+    ] = True
+    dry_run: __.typx.Annotated[
+        bool,
+        __.ddoc.Doc( ''' Preview operations without making changes. ''' ),
+    ] = False
 
     async def __call__( self ) -> int:
         ''' Executes ingestion command. '''

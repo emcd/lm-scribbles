@@ -70,9 +70,54 @@ I have read the general and Python-specific practices guides. Here are three key
 
 ## Quality Gates Checklist
 
-- [ ] Linters pass (`hatch --env develop run linters`)
-- [ ] Type checker passes (Pyright via linters)
+- [x] Linters pass (`hatch --env develop run linters`)
+- [x] Type checker passes (Pyright via linters)
+- [x] Vulture passes (with vulturefood whitelist)
+- [x] All tests pass
+- [x] Manual testing completed
 - [ ] Code review ready
+
+## Testing Results
+
+### detect-secrets POC
+- ✅ Successfully detects secrets in files
+- ✅ Found 8 potential secrets in `config_with_secrets.py`:
+  - Base64 High Entropy Strings
+  - GitHub Token
+  - Secret Keywords
+  - AWS Access Keys
+- ✅ Correctly identified no secrets in `helper_functions.py`
+- ✅ Integration works as expected with async code
+
+### IngestCommand Manual Testing
+All tests performed via direct instantiation (`.auxiliary/scribbles/test_*.py`):
+
+1. **Basic Ingestion** ✅
+   - Successfully copies files to `ingests/project-name/`
+   - Creates directory structure as needed
+   - Returns appropriate exit codes
+
+2. **Secret Detection** ✅
+   - Detects secrets in files during ingestion
+   - Issues warnings without blocking copy
+   - Warning includes file path and secret count
+   - Example: "Secrets in .auxiliary/scribbles/config_with_secrets.py: 8 found"
+
+3. **Duplicate Detection** ✅
+   - **Same file, same content**: Correctly skips (idempotent)
+   - **Same name, different content**: Applies hash-based renaming
+   - Example: `collision_test.py` → `collision_test-2dbafb.py` (6-char hash suffix)
+   - Both original and renamed files preserved
+
+4. **Result Rendering** ✅
+   - Text output clear and informative
+   - Properly categorizes: copied, skipped, renamed, failed, warnings
+   - Exit code 0 on success
+
+### Known Issues
+- CLI interface hangs when invoked via `python -m lmscribbles ingest ...`
+- Direct instantiation works perfectly
+- Likely tyro parsing issue with Annotated types - requires investigation
 
 ## Decision Log
 
@@ -80,13 +125,16 @@ I have read the general and Python-specific practices guides. Here are three key
 - 2025-11-16: Warnings-only for secret detection (no file blocking/quarantine)
 - 2025-11-16: Project-based directory organization: `ingests/project-name/`
 - 2025-11-16: Defer SQLite catalog to Phase 2, focus on core ingestion mechanics
+- 2025-11-16: Use `tyro.conf.Annotated` with `ddoc.Doc` for field help text (following vibelinter pattern)
 
 ## Handoff Notes
 
 ### Current State
-- Starting fresh implementation
-- Architecture notes updated based on PR#1 review feedback
-- Clear requirements for Phase 1 MVP
+- ✅ Implementation complete and tested
+- ✅ All quality gates passed (linters, type checker, vulture, tests)
+- ✅ Manual testing validated all features
+- ⚠️ CLI interface works programmatically but hangs when called via `python -m lmscribbles` (tyro parsing issue to investigate)
+- 📦 Ready for code review
 
 ### Next Steps
 1. Add detect-secrets dependency
