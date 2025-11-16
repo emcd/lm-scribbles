@@ -27,6 +27,12 @@ Archive and classify "scribbles" (LLM-generated content) from various projects, 
 - Follows conventions from `emcd-appcore[cli]` library
 - Empty `.auxiliary/scribbles/` directory ready for data
 
+### Three-Bin Workflow
+The system implements a three-tier LLM-driven curation workflow:
+1. **Ingests**: Raw scribbles organized by project (aggregated from various machines)
+2. **Selections**: Curated subset identified as valuable (LLM-assisted selection)
+3. **Refinements**: Polished gems ready for reuse (LLM-assisted refinement)
+
 ## Reference CLI Architecture Analysis
 
 ### Key Patterns from `vibelinter` and `appcore.cli`
@@ -60,56 +66,63 @@ Archive and classify "scribbles" (LLM-generated content) from various projects, 
 
 #### 1. CLI Commands
 
-**IngestCommand** (Primary focus)
-- Copy files from source to target directory
-- Screen each file for secrets
-- Detect duplicates via content hashing
-- Handle naming conflicts (interactive or heuristic)
-- Emit warnings for secrets and duplicates
+**IngestCommand** (Primary focus - Phase 1)
+- Copy files from source to target directory with project-based organization
+- Screen each file for secrets (warnings only, no file quarantine)
+- Detect duplicate names in target directory via content hashing
+- Automatically handle naming conflicts with hash-based renaming
+- Emit warnings for secrets and duplicate name conflicts
 
-**ClassifyCommand**
+**ClassifyCommand** (Stub only - Phase 2+)
 - Tag scribbles with labels
 - Update catalog database
 - Support bulk classification operations
+- LLM-assisted classification
 
-**SearchCommand**
+**SearchCommand** (Stub only - Phase 2+)
 - Query scribbles by labels, dates, content
 - Support full-text search
 
-**RefinementsCommand**
-- Manage the "refinements" workflow
-- Mark scribbles as candidates for refinement
-- Track refinement status
-
-**ConfigureCommand**
-- Manage configuration settings
-- Configure secret detection rules
-- Set default behaviors (interactive vs. automated)
+**Note**: Configuration will be file-based via `appcore` configuration system. No dedicated ConfigureCommand needed.
 
 #### 2. Directory Structure
 
 ```
-scribbles/               # Raw archived scribbles
-  ├── YYYY-MM/          # Organized by month
-  │   ├── original-name-1.ext
-  │   ├── original-name-2.ext
-  │   └── duplicates/   # Renamed duplicates
-  │       └── original-name-hash.ext
+ingests/                      # Raw scribbles (renamed from "scribbles")
+  ├── lm-scribbles/          # Organized by project name
+  │   ├── file-1.ext
+  │   ├── file-2.ext
+  │   └── file-2-a1b2c3.ext  # Duplicate name, different content (hash suffix)
+  ├── python-dynadoc/
+  │   └── ...
+  └── ...
 
-refinements/            # Extracted gems
-  ├── YYYY-MM/
-  │   ├── refined-item-1.ext
-  │   └── metadata/     # Refinement notes
+selections/                   # Curated subset (LLM-selected)
+  ├── lm-scribbles/          # Project-based organization
+  │   └── file-1.ext -> ../../ingests/lm-scribbles/file-1.ext  # Symlinks
+  └── ...
+
+refinements/                  # Polished gems (LLM-refined)
+  ├── refined-item-1.ext     # Possibly flat structure
+  ├── refined-item-2.ext
+  └── ...
 ```
+
+**Key Notes**:
+- Source directories are typically `.auxiliary/scribbles/` from various project repositories
+- Ingests aggregates scribbles from multiple machines over time by project
+- Only files with duplicate names AND different content get hash suffixes
+- Files with same name and same content are skipped (idempotent ingestion)
 
 #### 3. Catalog System
 
-**Storage Options** (to be decided):
-1. **SQLite database** - Good for queries, structured data
-2. **YAML/JSON files** - Good for git tracking, human readability
-3. **Hybrid** - Index in SQLite, metadata in YAML
+**Deferred to Phase 2+**. Initial focus is on core ingestion mechanics.
 
-**Catalog Schema** (preliminary):
+**Future Storage Options**:
+- SQLite database stored via Git LFS in the repository
+- Possible YAML export for human readability
+
+**Future Catalog Schema** (preliminary - needs review):
 ```python
 @dataclass
 class ScribbleMetadata:
@@ -125,7 +138,7 @@ class ScribbleMetadata:
     refinement_id: str | None        # Link to refinement if extracted
 ```
 
-**Label Categories** (examples):
+**Label Categories** (good ideas for future):
 - **Source**: `debug`, `exploration`, `proof-of-concept`, `investigation`
 - **Quality**: `gem`, `interesting`, `routine`, `noise`
 - **Topic**: `architecture`, `bug-fix`, `algorithm`, `api-design`
@@ -134,211 +147,203 @@ class ScribbleMetadata:
 
 #### 4. Secret Detection
 
-**Options** (research needed):
-1. **Existing packages**:
-   - `detect-secrets` (Yelp) - Widely used, extensible
-   - `truffleHog` - Git-focused but adaptable
-   - `gitleaks` - Fast, configurable
+**Approach**: Use `detect-secrets` (Yelp package) for proven reliability.
 
-2. **Bespoke solution**:
-   - Regex patterns for common secrets
-   - Entropy analysis for random strings
-   - Path-based exclusions (e.g., `.env` patterns)
-
-**Recommendation**: Start with `detect-secrets` for proven reliability, with option to customize.
+**Behavior**:
+- Scan each file before copying
+- Issue warnings for detected secrets
+- No file quarantine or blocking - just inform the user
+- No specific custom secret patterns required initially (common patterns sufficient)
 
 #### 5. Duplicate Detection
 
-**Strategy**:
-1. Compute content hash (SHA-256) on ingest
-2. Check against catalog for existing hash
-3. If duplicate:
-   - **Same content, same name**: Skip silently (idempotent)
-   - **Same content, different name**: Warn, optionally link
-   - **Same name, different content**:
-     - Interactive: Prompt user for action
-     - Automated: Append hash suffix to filename
+**Simplified Strategy**:
+1. Check if filename already exists in target directory
+2. If yes, compute content hashes for both source and target files
+3. Compare hashes:
+   - **Same content**: Skip copy (idempotent ingestion)
+   - **Different content**: Automatically rename with hash suffix
 
-**Heuristic Renaming Pattern**:
+**Automated Renaming Pattern**:
 ```
 original-name.ext          # First version
-original-name-a1b2c3.ext   # Collision, first 6 chars of hash
+original-name-a1b2c3.ext   # Name collision with different content (first 6 chars of hash)
 ```
 
-#### 6. Data Models
+**Note**: No need to track files with same content but different names - only handle name conflicts in the target directory.
+
+#### 6. Data Models (Phase 1)
 
 ```python
 from dataclasses import dataclass
-from datetime import datetime
-from enum import Enum
 from pathlib import Path
-
-class ScribbleStatus(Enum):
-    RAW = "raw"
-    CLASSIFIED = "classified"
-    REFINED = "refined"
-    ARCHIVED = "archived"
-
-class DuplicateStrategy(Enum):
-    SKIP = "skip"
-    RENAME = "rename"
-    INTERACTIVE = "interactive"
 
 @dataclass
 class IngestOptions:
-    source_paths: list[Path]
-    target_base: Path
-    check_secrets: bool = True
-    duplicate_strategy: DuplicateStrategy = DuplicateStrategy.INTERACTIVE
-    organize_by_month: bool = True
-    dry_run: bool = False
+    source_paths: list[Path]      # Files or directories to ingest
+    target_base: Path              # Base directory (e.g., "ingests/")
+    project_name: str              # Target subdirectory name
+    check_secrets: bool = True     # Enable secret detection
+    dry_run: bool = False          # Preview without copying
 
 @dataclass
 class SecretDetectionResult:
     file_path: Path
     has_secrets: bool
-    findings: list[str]  # Description of what was found
+    findings: list[str]            # Description of detected secrets
 
 @dataclass
 class IngestResult:
-    succeeded: list[Path]
-    skipped: list[Path]
-    failed: list[tuple[Path, str]]  # (path, reason)
-    warnings: list[str]
+    copied: list[Path]             # Successfully copied files
+    skipped: list[Path]            # Skipped (same content)
+    renamed: list[tuple[Path, Path]]  # Renamed (name conflict, different content)
+    failed: list[tuple[Path, str]]    # Failed with reason
+    warnings: list[str]            # Warnings (secrets, errors, etc.)
 ```
 
-## Questions and Decisions Needed
+## Decisions Made (from PR review)
 
 ### 1. Secret Detection Strategy
-- **Q**: Use existing package or build custom solution?
-- **Recommendation**: Start with `detect-secrets` for reliability
-- **Follow-up**: Do you have specific secret patterns we need to catch beyond common ones (API keys, passwords, tokens)?
+- **Decision**: Use `detect-secrets` (Yelp) package
+- **Behavior**: Issue warnings only, no file blocking or quarantine
+- **Patterns**: Common patterns sufficient (API keys, passwords, tokens) - no custom patterns needed
 
 ### 2. Duplicate Handling
-- **Q**: Default to interactive or automated renaming?
-- **Options**:
-  - Interactive: Safer, user reviews each conflict
-  - Automated: Faster, uses heuristic renaming
-- **Recommendation**: Interactive by default, with `--auto-rename` flag for batch operations
+- **Decision**: Automated renaming for Phase 1
+- **Strategy**: Only check for duplicate names in target directory, compare hashes if name exists
+- **Rationale**: Allows automated testing without interactive prompts; can add interactive mode later if needed
 
 ### 3. Catalog Implementation
-- **Q**: Database (SQLite) vs. file-based (YAML/JSON) vs. hybrid?
-- **Tradeoffs**:
-  - SQLite: Fast queries, complex searches, but binary format
-  - YAML: Human-readable, git-friendly, but slower for large datasets
-  - Hybrid: Best of both, more complexity
-- **Recommendation**: Start with SQLite for simplicity, add YAML export for git tracking later
+- **Decision**: Defer to Phase 2+
+- **Future**: Likely SQLite with Git LFS storage
+- **Rationale**: Focus Phase 1 on core ingestion mechanics
 
 ### 4. Refinements Workflow
-- **Q**: How should the refinements process work?
-- **Considerations**:
-  - Manual selection from catalog?
-  - Automated suggestions based on labels/quality?
-  - Integration with editor/viewer?
-- **Need**: More details on your typical refinement workflow
+- **Decision**: Three-bin system (ingests → selections → refinements)
+- **Details**: LLM-driven selection and refinement process
+- **Structure**: Selections use symlinks to ingests; refinements possibly flat
 
 ### 5. File Organization
-- **Q**: Organize by date, project, type, or combination?
-- **Current proposal**: `YYYY-MM/` subdirectories
-- **Alternatives**:
-  - Project-based: `project-name/YYYY-MM/`
-  - Type-based: `code/`, `docs/`, `diagrams/`
-  - Flat with metadata: All files in one dir, catalog for organization
+- **Decision**: Project-based organization (not date-based)
+- **Structure**: `ingests/project-name/`, `selections/project-name/`
+- **Rationale**: Aggregate scribbles by project over time across multiple machines
 
 ### 6. Import/Export
-- **Q**: Should we support exporting catalogs or collections?
-- **Use cases**: Sharing gems, backing up refined content, integration with other tools
-- **Format**: Markdown reports? JSON exports? Git bundle?
+- **Decision**: Defer until after core ingestion is working
+- **Future**: May add catalog export features
 
 ### 7. Search and Query Interface
-- **Q**: CLI-only or also web interface?
-- **Considerations**:
-  - CLI: Fits project style, scriptable
-  - Web: Better for browsing, visualization
-- **Recommendation**: CLI first, web as future enhancement
+- **Decision**: Defer design until later phases
+- **Future**: CLI-based initially
 
-## Technical Considerations
+### 8. Configuration
+- **Decision**: File-based via `appcore` configuration system
+- **Rationale**: No need for dedicated ConfigureCommand
+
+### 9. Source Directories
+- **Context**: Typically `.auxiliary/scribbles/` from various project repositories
+- **Usage Pattern**: Aperiodic ingestion per-project as scribbles accumulate
+
+## Technical Considerations (Phase 1 Focus)
 
 ### Performance
 - **Hashing**: Use `hashlib.sha256()` with buffered reads for large files
 - **Parallel processing**: Use `asyncio` for concurrent file operations
-- **Catalog indexing**: SQLite with indexes on common query fields (labels, dates, hashes)
+- **Optimization**: Defer until needed - prioritize correctness first
 
 ### Testing Strategy
-- Unit tests for core logic (hashing, duplicate detection)
-- Integration tests for CLI commands
-- Fixtures with sample scribbles (safe, synthetic data)
-- Mock secret detection for deterministic tests
+- **Initial**: Manual testing using test fixtures in `.auxiliary/scribbles`
+- **Self-hosting**: Test ingest command by ingesting its own test fixtures
+- **Future**: Formal test suite with unit and integration tests
 
 ### Error Handling
 - Graceful degradation (skip unreadable files, log errors)
 - Dry-run mode for testing operations
-- Rollback capability for batch operations (transaction log)
 - Clear error messages with suggested fixes
+- Result objects track successes, failures, warnings separately
 
 ### Security
-- Secrets file handling: Never copy files with detected secrets by default
-- Quarantine option: Move flagged files to review directory
-- Audit log: Track all ingest operations for review
+- Secrets detection: Warn user but continue with copy
+- No file blocking or quarantine needed
 
-### Extensibility
-- Plugin system for custom secret detectors
-- Custom label taxonomies
-- Configurable file filters (by extension, size, pattern)
-- Export formats (custom renderers)
+## Implementation Phases (Updated)
 
-## Implementation Phases
+### Phase 1: Core Ingest (MVP) - CURRENT FOCUS
+**Goal**: Get basic file ingestion working to enable LLM-based classification.
 
-### Phase 1: Core Ingest (MVP)
-1. IngestCommand with basic file copying
-2. Content hashing and duplicate detection
-3. Simple interactive duplicate handling
-4. Basic secret detection (using `detect-secrets`)
-5. SQLite catalog for metadata
-6. Warning system for secrets/duplicates
+**Deliverables**:
+1. **IngestCommand** - Full implementation:
+   - Project-based file copying (`ingests/project-name/`)
+   - Content hashing (SHA-256) for duplicate detection
+   - Automated duplicate name handling (hash-based renaming)
+   - Secret detection using `detect-secrets` (warnings only)
+   - Self-rendering result objects (text and JSON output)
+   - Dry-run mode
+2. **ClassifyCommand** - Stub only (placeholder for Phase 2)
+3. **SearchCommand** - Stub only (placeholder for Phase 2)
+4. **Test fixtures** - Create sample scribbles in `.auxiliary/scribbles`
+5. **Manual testing** - Verify ingestion works correctly
 
-### Phase 2: Classification & Catalog
-1. ClassifyCommand for labeling
-2. SearchCommand for querying
-3. Enhanced catalog schema with labels
-4. Bulk operations support
+**Not included in Phase 1**:
+- SQLite catalog (deferred to Phase 2+)
+- Interactive duplicate handling (automated only for now)
+- ConfigureCommand (use file-based config via appcore)
+
+### Phase 2: Classification & Catalog (Future)
+1. SQLite catalog with Git LFS storage
+2. ClassifyCommand full implementation with LLM integration
+3. SearchCommand for querying catalog
+4. Label taxonomy and bulk operations
 5. Export catalog to YAML/JSON
 
-### Phase 3: Refinements Workflow
-1. RefinementsCommand suite
-2. Refinement tracking in catalog
-3. Integration with refinements directory
-4. Metadata for refinement notes
+### Phase 3: Selections & Refinements Workflow (Future)
+1. Selections directory with symlink management
+2. LLM-driven selection workflow
+3. Refinements directory and workflow
+4. LLM-assisted refinement process
 
-### Phase 4: Polish & Features
-1. Configuration management
+### Phase 4: Polish & Features (Future)
+1. Interactive duplicate handling (optional)
 2. Advanced search (full-text, regex)
 3. Statistics and reporting
-4. Dry-run and simulation modes
-5. Comprehensive testing
+4. Comprehensive test suite
+5. Performance optimizations
 
-## Next Steps
+## Next Steps (Phase 1 Implementation)
 
-1. **Finalize decisions** on open questions (see above)
-2. **Research secret detection packages** - Quick evaluation of `detect-secrets`
-3. **Create data models** - Implement core dataclasses
-4. **Prototype IngestCommand** - Basic file copying with duplicate detection
-5. **Design catalog schema** - SQLite tables and indexes
-6. **Write tests** - Start with duplicate detection logic
+1. ✅ **Update architecture notes** based on PR feedback
+2. **Add `detect-secrets` dependency** to `pyproject.toml`
+3. **Implement IngestCommand**:
+   - Command dataclass with CLI argument parsing
+   - File discovery and validation
+   - Content hashing logic
+   - Duplicate detection and automated renaming
+   - Secret detection integration
+   - Result objects with self-rendering (text/JSON)
+   - Exception classes for error handling
+4. **Create test fixtures** in `.auxiliary/scribbles`:
+   - Sample files (some with secrets for POC testing)
+   - Duplicate name scenarios
+5. **Manual testing**:
+   - Test ingestion with fixtures
+   - Verify duplicate handling
+   - Validate secret detection warnings
+   - Test dry-run mode
+6. **Stub commands**: Create ClassifyCommand and SearchCommand placeholders
 
 ## References
 
 - CLI patterns: `vibelinter/cli.py`, `appcore/cli.py`
-- Dependencies: `tyro`, `emcd-appcore[cli]`, `absence`, `frigid`, `dynadoc`
-- Potential additions: `detect-secrets`, `rich`, `questionary` (for interactive prompts)
+- Current dependencies: `tyro`, `emcd-appcore[cli]`, `absence`, `frigid`, `dynadoc`
+- New dependency: `detect-secrets`
 
-## Open Questions for Collaboration
+## Summary
 
-1. What secret patterns are most important to detect in your scribbles?
-2. How do you currently organize your scribbles manually?
-3. What makes a scribble a "gem" vs. routine content?
-4. How often do you expect to ingest scribbles? (Daily, weekly, per-project?)
-5. Do you have existing scribbles to test with, or should we create fixtures?
-6. Are there specific export formats you need for refined content?
-7. Should the system support watching directories for auto-ingest?
-8. Do you want version tracking for refined scribbles (git integration)?
+Architecture has been refined based on PR review feedback. Key simplifications for Phase 1:
+- Project-based organization (not date-based)
+- Automated duplicate handling (not interactive)
+- Warnings-only for secrets (no blocking)
+- No catalog in Phase 1 (focus on ingestion mechanics)
+- Three-bin workflow (ingests → selections → refinements) for future phases
+
+Ready to proceed with IngestCommand implementation following `vibelinter` patterns.
