@@ -22,6 +22,7 @@ dependencies = [
   'frigid~=4.2',
   'emcd-appcore[cli]~=1.6',
   # --- END: Injected by Copier ---
+  'detect-secrets',
 ]
 classifiers = [ # https://pypi.org/classifiers
   'Development Status :: 3 - Alpha',

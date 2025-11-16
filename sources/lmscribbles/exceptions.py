@@ -30,3 +30,15 @@ class Omniexception( __.immut.exceptions.Omniexception ):
 
 class Omnierror( Omniexception, Exception ):
     ''' Base for error exceptions raised by package API. '''
+
+
+class DuplicateDetectionFailure( Omnierror, OSError ):
+    ''' Duplicate detection failure. '''
+
+
+class FileIngestionFailure( Omnierror, OSError ):
+    ''' File ingestion failure. '''
+
+
+class SecretDetectionFailure( Omnierror, RuntimeError ):
+    ''' Secret detection failure. '''

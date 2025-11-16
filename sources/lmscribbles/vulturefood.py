@@ -18,42 +18,11 @@
 #============================================================================#
 
 
-''' Command-line interface. '''
+''' Whitelist of intentionally unused code for vulture. '''
 
 
-from . import __, commands
+from .commands import IngestResult
 
 
-def execute( ) -> None:
-    ''' Entrypoint for CLI execution. '''
-    from asyncio import run
-    config = (
-        __.tyro.conf.EnumChoicesFromValues,
-        __.tyro.conf.HelptextFromCommentsOff,
-    )
-    try: run( __.tyro.cli( _main, config = config )( ) ) # pyright: ignore
-    except SystemExit: raise
-    except BaseException:
-        # TODO: Log exception.
-        raise SystemExit( 1 ) from None
-
-
-async def _main(
-    command: __.typx.Union[
-        __.typx.Annotated[
-            commands.IngestCommand,
-            __.tyro.conf.subcommand(
-                'ingest', prefix_name = False, default = True ),
-        ],
-        __.typx.Annotated[
-            commands.ClassifyCommand,
-            __.tyro.conf.subcommand( 'classify', prefix_name = False ),
-        ],
-        __.typx.Annotated[
-            commands.SearchCommand,
-            __.tyro.conf.subcommand( 'search', prefix_name = False ),
-        ],
-    ],
-) -> None:
-    ''' Main CLI entrypoint with subcommands. '''
-    await command( )
+# Self-rendering methods that will be called dynamically
+IngestResult.render_as_json

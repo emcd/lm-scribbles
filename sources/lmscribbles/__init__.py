@@ -23,7 +23,7 @@
 
 from . import __
 # --- BEGIN: Injected by Copier ---
-from . import exceptions
+from . import commands, exceptions
 # --- END: Injected by Copier ---
 
 
