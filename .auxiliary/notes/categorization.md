@@ -23,6 +23,237 @@
 - CLI interface hangs when invoked via `python -m lmscribbles ingest ...`
 - Direct instantiation works perfectly
 - Suspected tyro parsing issue with Annotated types
+- **NEW**: IngestCommand doesn't preserve source directory hierarchy (causes false duplicate warnings)
+- **NEW**: Tyro requires `--command.argument` prefix (should use `prefix_name=False`)
+
+See `.auxiliary/notes/issues.md` for detailed issue tracking.
+
+## Real Scribbles Analysis (python-librovore)
+
+**Date**: 2025-11-17
+**Source**: `ingests/python-librovore/` (190 files ingested)
+
+### File Distribution
+
+**By Type**:
+- Python scripts: 143 (75%)
+- HTML files: 36 (19%) - Documentation samples from Sphinx themes
+- JSON files: 7 (4%) - Structured data from inventory analysis
+- Markdown files: 3 (2%) - Architecture analysis documents
+- Shell scripts: 1 (<1%)
+
+**Python Script Categories**:
+- Test POCs (`test_*.py`): 76 files (53% of Python)
+- Debug scripts (`debug_*.py`): 27 files (19% of Python)
+- Analysis/comparison scripts: ~15 files (10% of Python)
+- Utility/conversion scripts: ~25 files (17% of Python)
+
+### Scribble Patterns Observed
+
+#### 1. Test/Proof-of-Concept Scripts
+**Examples**: `test_mkdocs_reg.py`, `test_cache_bypass.py`, `test_import_availability.py`
+
+**Characteristics**:
+- Small, focused scripts (typically <100 LOC)
+- Often test new features or validate API behavior
+- Mix of pytest-style tests and standalone execution
+- Frequently use `#!/usr/bin/env python3` shebang
+
+**Typical Content**:
+```python
+#!/usr/bin/env python3
+import librovore.module
+print('Before:', state)
+result = module.function()
+print('After:', state)
+```
+
+**Value**: High for understanding feature exploration and validation patterns
+
+#### 2. Debug/Investigation Scripts
+**Examples**: `debug_extraction.py`, `debug_pytest.py`, `debug_remote_extraction.py`
+
+**Characteristics**:
+- Longer scripts investigating specific issues
+- Often include detailed print/logging statements
+- Web scraping/HTML parsing for documentation analysis
+- BeautifulSoup, urllib usage for live testing
+
+**Typical Content**:
+- URL fetching and HTML analysis
+- Selector experimentation
+- Data structure exploration
+- Step-by-step problem diagnosis
+
+**Value**: Very high - capture problem-solving thought process
+
+#### 3. Analysis Documents
+**Examples**: `cache_config_analysis.md`, `robots_fix_analysis.md`
+
+**Characteristics**:
+- Markdown format with tables and code examples
+- Compare alternative architectural approaches
+- Document design trade-offs
+- Often include "Options" sections with pros/cons
+
+**Typical Content**:
+- Configuration pattern analysis
+- Alternative architecture proposals
+- Field usage comparison tables
+- Recommendations for refactoring
+
+**Value**: Extremely high - capture architectural thinking and decisions
+
+#### 4. Data Samples/Artifacts
+**Examples**: HTML files (Sphinx theme samples), JSON files (inventory analysis)
+
+**Characteristics**:
+- Reference material from external sources
+- Sphinx theme HTML samples (furo, rtd, pydata, etc.)
+- JSON output from analysis scripts
+- Used for comparison and pattern extraction
+
+**Typical Files**:
+- `pydata-sphinx-theme-structure.html` (25KB)
+- `inventory_analysis.json` (structured inventory data)
+- `mkdocs_search_results.json` (API response samples)
+
+**Value**: Medium to high - reference material for understanding patterns
+
+#### 5. Batch Conversion/Refactoring Scripts
+**Examples**: `batch_convert_remaining_tests.py`, `update_query_tests.py`
+
+**Characteristics**:
+- Regex-based code transformation
+- Automated refactoring utilities
+- Migration helpers for API changes
+- Often one-time use scripts
+
+**Typical Content**:
+- Pattern matching for code elements
+- Replacement logic with multiple conversion patterns
+- File reading/writing operations
+
+**Value**: Medium - useful for understanding refactoring strategies
+
+#### 6. Comprehensive Analysis/Summary Scripts
+**Examples**: `comprehensive_summary.py`, `compare_formats.py`, `compare_schemas.py`
+
+**Characteristics**:
+- Aggregate data from multiple sources
+- Generate comparative reports
+- Cross-theme or cross-format analysis
+- Often produce formatted output (tables, charts)
+
+**Typical Content**:
+- Data loading from JSON files
+- Pattern aggregation across samples
+- Consistency checking
+- Report generation with emojis/formatting
+
+**Value**: High - demonstrate analytical approaches
+
+### Classification Insights
+
+Based on the real scribbles, here are refined categorization recommendations:
+
+#### Recommended Label Additions
+
+**Purpose-Based Labels** (new category):
+- `purpose:test-poc` - Testing/proof-of-concept (replaces generic `source:poc`)
+- `purpose:debug` - Debug/investigation scripts (replaces `source:debug`)
+- `purpose:analysis` - Analysis documents and scripts
+- `purpose:refactor` - Refactoring/migration utilities
+- `purpose:reference` - Reference material/samples (HTML, JSON data)
+
+**Content Type Labels** (new category):
+- `format:script` - Executable Python scripts
+- `format:document` - Markdown/text documents
+- `format:data` - JSON/structured data
+- `format:sample` - HTML/external samples
+
+**Scope Labels** (new category):
+- `scope:minimal` - Small, focused scripts (<50 LOC)
+- `scope:moderate` - Medium scripts (50-200 LOC)
+- `scope:comprehensive` - Large analysis/summary scripts (>200 LOC)
+
+**Technology Tags** (refined):
+- `tech:web-scraping` - BeautifulSoup, urllib, requests
+- `tech:testing` - pytest, test utilities
+- `tech:sphinx` - Sphinx documentation system
+- `tech:mkdocs` - MkDocs documentation system
+- `tech:async` - Asyncio patterns
+
+#### Quality Assessment Heuristics
+
+Based on observed patterns, suggest these quality indicators:
+
+**Likely `quality:gem`**:
+- Markdown analysis documents with comparison tables
+- Comprehensive summary/analysis scripts
+- Scripts with detailed comments explaining approach
+
+**Likely `quality:interesting`**:
+- Debug scripts solving non-trivial problems
+- Test POCs for new features
+- Comparison/validation utilities
+
+**Likely `quality:routine`**:
+- Simple test scripts with minimal logic
+- One-off conversion utilities (already run)
+- Basic validation checks
+
+**Likely `quality:noise`**:
+- Duplicate or superseded test scripts
+- Failed experiments (if identifiable)
+- Temporary debugging scaffolding
+
+### File Naming Patterns
+
+**Observed Conventions**:
+- `test_*.py` - Test/POC scripts
+- `debug_*.py` - Debug/investigation scripts
+- `*_analysis.*` - Analysis documents/scripts
+- `compare_*.py` - Comparison utilities
+- `*-theme-*.html` - Theme samples (with theme name)
+- `batch_*.py` - Batch processing utilities
+
+**Implications for Auto-Classification**:
+- File naming provides strong hints for initial labeling
+- Can use patterns to suggest `purpose:*` labels
+- Theme names in filenames suggest `tech:*` labels
+
+### Multi-File Relationships
+
+**Observed Patterns**:
+- Analysis script + corresponding JSON output
+  - Example: `inventory_analysis.py` + `inventory_analysis.json`
+- Multiple HTML samples from same theme
+  - Example: `furo-*.html`, `rtd-*.html` files
+- Test suite conversions (batch + individual tests)
+
+**Implications**:
+- Consider "related files" or "file sets" in metadata
+- Group classification might be useful
+- Could track derivation (script → output)
+
+### Surprising Findings
+
+1. **High test/debug ratio**: 76 test + 27 debug = 103 files (72% of Python scripts)
+   - Suggests heavy emphasis on exploration and validation
+   - These are valuable learning artifacts
+
+2. **Architecture analysis documents**: Presence of `.md` files shows conscious documentation of design thinking
+   - Extremely valuable for understanding decision-making
+   - Should definitely be `quality:gem`
+
+3. **External reference samples**: HTML files are curated samples, not random web pages
+   - Serve specific analytical purpose (theme comparison)
+   - Moderate to high value depending on analysis results
+
+4. **Minimal duplication**: Despite flattening issue, few actual duplicates
+   - Suggests good naming hygiene in source
+   - Validates that duplicate detection would be useful but not critical
 
 ## Next Steps Recommendations (from Handoff)
 
