@@ -1,0 +1,188 @@
+{
+  "https://docs.pydantic.dev/latest/": {
+    "inventory": {
+      "base_url": "https://docs.pydantic.dev/latest/",
+      "has_objects_inv": true,
+      "objects_inv_url": "https://docs.pydantic.dev/latest/objects.inv",
+      "inventory_accessible": true,
+      "objects_count": 0,
+      "domains": "set()",
+      "roles": "set()",
+      "sample_objects": []
+    },
+    "search_index": {
+      "url": "https://docs.pydantic.dev/latest/search/search_index.json",
+      "accessible": true,
+      "config": {
+        "lang": [
+          "en"
+        ],
+        "separator": "[\\s\\-]+",
+        "pipeline": [
+          "stopWordFilter"
+        ]
+      },
+      "document_count": 1742,
+      "sample_locations": [
+        {
+          "location": "",
+          "title": "Pydantic",
+          "text_preview": "<p>Documentation for version: v2.11.7.</p> <p>Pydantic is the most widely used data validation libra..."
+        },
+        {
+          "location": "#why-use-pydantic",
+          "title": "Why use Pydantic?",
+          "text_preview": "<ul> <li>Powered by type hints \u2014 with Pydantic, schema validation and serialization are controlled b..."
+        },
+        {
+          "location": "#pydantic-examples",
+          "title": "Pydantic examples",
+          "text_preview": "<p>To see Pydantic at work, let's start with a simple example, creating a custom class that inherits..."
+        },
+        {
+          "location": "#who-is-using-pydantic",
+          "title": "Who is using Pydantic?",
+          "text_preview": "<p>Hundreds of organisations and packages are using Pydantic. Some of the prominent companies and or..."
+        },
+        {
+          "location": "changelog/",
+          "title": "Changelog",
+          "text_preview": "..."
+        }
+      ],
+      "content_patterns": []
+    }
+  },
+  "https://fastapi.tiangolo.com/": {
+    "inventory": {
+      "base_url": "https://fastapi.tiangolo.com/",
+      "has_objects_inv": true,
+      "objects_inv_url": "https://fastapi.tiangolo.com/objects.inv",
+      "inventory_accessible": true,
+      "objects_count": 0,
+      "domains": "set()",
+      "roles": "set()",
+      "sample_objects": []
+    },
+    "search_index": {
+      "url": "https://fastapi.tiangolo.com/search/search_index.json",
+      "accessible": true,
+      "config": {
+        "lang": [
+          "en"
+        ],
+        "separator": "[\\s\\-]+",
+        "pipeline": [
+          "stopWordFilter"
+        ],
+        "fields": {
+          "title": {
+            "boost": 1000.0
+          },
+          "text": {
+            "boost": 1.0
+          },
+          "tags": {
+            "boost": 1000000.0
+          }
+        }
+      },
+      "document_count": 2667,
+      "sample_locations": [
+        {
+          "location": "",
+          "title": "FastAPI",
+          "text_preview": "<p> FastAPI framework, high performance, easy to learn, fast to code, ready for production </p> <p> ..."
+        },
+        {
+          "location": "#sponsors",
+          "title": "Sponsors",
+          "text_preview": "<p>Other sponsors</p>..."
+        },
+        {
+          "location": "#opinions",
+          "title": "Opinions",
+          "text_preview": "<p>\"[...] I'm using FastAPI a ton these days. [...] I'm actually planning to use it for all of my te..."
+        },
+        {
+          "location": "#typer-the-fastapi-of-clis",
+          "title": "Typer, the FastAPI of CLIs",
+          "text_preview": "<p>If you are building a CLI app to be used in the terminal instead of a web API, check out Typer.</..."
+        },
+        {
+          "location": "#requirements",
+          "title": "Requirements",
+          "text_preview": "<p>FastAPI stands on the shoulders of giants:</p> <ul> <li>Starlette for the web parts.</li> <li>Pyd..."
+        }
+      ],
+      "content_patterns": [
+        "api_documentation"
+      ]
+    }
+  },
+  "https://mkdocstrings.github.io/": {
+    "inventory": {
+      "base_url": "https://mkdocstrings.github.io/",
+      "has_objects_inv": true,
+      "objects_inv_url": "https://mkdocstrings.github.io/objects.inv",
+      "inventory_accessible": true,
+      "objects_count": 0,
+      "domains": "set()",
+      "roles": "set()",
+      "sample_objects": []
+    },
+    "search_index": {
+      "url": "https://mkdocstrings.github.io/search/search_index.json",
+      "accessible": true,
+      "config": {
+        "lang": [
+          "en"
+        ],
+        "separator": "[\\s\\-]+",
+        "pipeline": [
+          "stopWordFilter"
+        ],
+        "fields": {
+          "title": {
+            "boost": 1000.0
+          },
+          "text": {
+            "boost": 1.0
+          },
+          "tags": {
+            "boost": 1000000.0
+          }
+        }
+      },
+      "document_count": 519,
+      "sample_locations": [
+        {
+          "location": "",
+          "title": "mkdocstrings",
+          "text_preview": "<p>Automatic documentation from sources, for MkDocs. Come have a chat or ask questions on our Gitter..."
+        },
+        {
+          "location": "#features",
+          "title": "Features",
+          "text_preview": "<ul> <li> <p>Language-agnostic:   just like MkDocs, mkdocstrings is written in Python but is languag..."
+        },
+        {
+          "location": "#used-by",
+          "title": "Used by",
+          "text_preview": "<p>mkdocstrings is used by well-known companies, projects and scientific teams: Ansible, Apache, Fas..."
+        },
+        {
+          "location": "#installation",
+          "title": "Installation",
+          "text_preview": "<p>The <code>mkdocstrings</code> package doesn't provide support for any language: it's just a commo..."
+        },
+        {
+          "location": "#quick-usage",
+          "title": "Quick usage",
+          "text_preview": "<p>In <code>mkdocs.yml</code>:</p> <pre><code>site_name: \"My Library\"\n\ntheme:\n  name: \"material\"\n\npl..."
+        }
+      ],
+      "content_patterns": []
+    }
+  }
+}

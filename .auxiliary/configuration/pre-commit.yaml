@@ -2,6 +2,7 @@
 # See https://pre-commit.com/hooks.html for more hooks
 
 default_install_hook_types: [ 'pre-commit', 'pre-push' ]
+exclude: ^ingests/
 
 repos:
 
@@ -30,6 +31,8 @@ repos:
     fail_fast: true
   - id: check-json
     name: 'Validate: JSON Files'
+    exclude: |
+      ^ingests/.*
   - id: check-toml
     name: 'Validate: TOML Files'
   - id: check-yaml

@@ -1,0 +1,32 @@
+{
+  "https://docs.pydantic.dev/latest/": {
+    "base_url": "https://docs.pydantic.dev/latest/",
+    "search_assets": [
+      "https://cdn.jsdelivr.net/npm/algoliasearch@5.20.0/dist/lite/builds/browser.umd.js",
+      "https://cdn.jsdelivr.net/npm/instantsearch.js@4.77.3/dist/instantsearch.production.min.js"
+    ],
+    "search_index_files": [
+      "https://docs.pydantic.dev/latest/search/search_index.json"
+    ],
+    "search_config": {},
+    "errors": []
+  },
+  "https://fastapi.tiangolo.com/": {
+    "base_url": "https://fastapi.tiangolo.com/",
+    "search_assets": [],
+    "search_index_files": [
+      "https://fastapi.tiangolo.com/search/search_index.json"
+    ],
+    "search_config": {},
+    "errors": []
+  },
+  "https://mkdocstrings.github.io/": {
+    "base_url": "https://mkdocstrings.github.io/",
+    "search_assets": [],
+    "search_index_files": [
+      "https://mkdocstrings.github.io/search/search_index.json"
+    ],
+    "search_config": {},
+    "errors": []
+  }
+}

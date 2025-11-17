@@ -1,0 +1,185 @@
+{
+  "objects_mkdocstrings_github_io.inv": {
+    "file": "/home/me/src/python-librovore/.auxiliary/scribbles/objects_mkdocstrings_github_io.inv",
+    "project": "mkdocstrings",
+    "version": "0.0.0",
+    "object_count": 539,
+    "domains": {
+      "py": 539
+    },
+    "roles": {
+      "module": 8,
+      "class": 34,
+      "param": 303,
+      "attr": 102,
+      "function": 84,
+      "data": 8
+    },
+    "sample_objects": [
+      {
+        "name": "mkdocstrings",
+        "domain": "py",
+        "role": "module",
+        "priority": "1",
+        "uri": "reference/api/#$",
+        "uri_expanded": "reference/api/#mkdocstrings"
+      },
+      {
+        "name": "mkdocstrings.AutoDocProcessor",
+        "domain": "py",
+        "role": "class",
+        "priority": "1",
+        "uri": "reference/api/#$",
+        "uri_expanded": "reference/api/#mkdocstrings.AutoDocProcessor"
+      },
+      {
+        "name": "mkdocstrings.AutoDocProcessor(autorefs)",
+        "domain": "py",
+        "role": "param",
+        "priority": "1",
+        "uri": "reference/api/#$",
+        "uri_expanded": "reference/api/#mkdocstrings.AutoDocProcessor(autorefs)"
+      },
+      {
+        "name": "mkdocstrings.AutoDocProcessor.md",
+        "domain": "py",
+        "role": "attr",
+        "priority": "1",
+        "uri": "reference/api/#$",
+        "uri_expanded": "reference/api/#mkdocstrings.AutoDocProcessor.md"
+      },
+      {
+        "name": "mkdocstrings.AutoDocProcessor.run",
+        "domain": "py",
+        "role": "function",
+        "priority": "1",
+        "uri": "reference/api/#$",
+        "uri_expanded": "reference/api/#mkdocstrings.AutoDocProcessor.run"
+      },
+      {
+        "name": "mkdocstrings.CollectorItem",
+        "domain": "py",
+        "role": "data",
+        "priority": "1",
+        "uri": "reference/api/#$",
+        "uri_expanded": "reference/api/#mkdocstrings.CollectorItem"
+      }
+    ]
+  },
+  "objects_fastapi_tiangolo_com.inv": {
+    "file": "/home/me/src/python-librovore/.auxiliary/scribbles/objects_fastapi_tiangolo_com.inv",
+    "project": "FastAPI",
+    "version": "0.0.0",
+    "object_count": 1349,
+    "domains": {
+      "py": 1349
+    },
+    "roles": {
+      "class": 163,
+      "function": 267,
+      "attr": 757,
+      "data": 159,
+      "module": 3
+    },
+    "sample_objects": [
+      {
+        "name": "fastapi.APIRouter",
+        "domain": "py",
+        "role": "class",
+        "priority": "1",
+        "uri": "reference/apirouter/#$",
+        "uri_expanded": "reference/apirouter/#fastapi.APIRouter"
+      },
+      {
+        "name": "fastapi.APIRouter.delete",
+        "domain": "py",
+        "role": "function",
+        "priority": "1",
+        "uri": "reference/apirouter/#$",
+        "uri_expanded": "reference/apirouter/#fastapi.APIRouter.delete"
+      },
+      {
+        "name": "fastapi.BackgroundTasks.args",
+        "domain": "py",
+        "role": "attr",
+        "priority": "1",
+        "uri": "reference/background/#$",
+        "uri_expanded": "reference/background/#fastapi.BackgroundTasks.args"
+      },
+      {
+        "name": "fastapi.openapi.docs.swagger_ui_default_parameters",
+        "domain": "py",
+        "role": "data",
+        "priority": "1",
+        "uri": "reference/openapi/docs/#$",
+        "uri_expanded": "reference/openapi/docs/#fastapi.openapi.docs.swagger_ui_default_parameters"
+      },
+      {
+        "name": "fastapi.openapi.models",
+        "domain": "py",
+        "role": "module",
+        "priority": "1",
+        "uri": "reference/openapi/models/#$",
+        "uri_expanded": "reference/openapi/models/#fastapi.openapi.models"
+      }
+    ]
+  },
+  "objects_docs_pydantic_dev.inv": {
+    "file": "/home/me/src/python-librovore/.auxiliary/scribbles/objects_docs_pydantic_dev.inv",
+    "project": "Pydantic",
+    "version": "0.0.0",
+    "object_count": 1066,
+    "domains": {
+      "py": 1066
+    },
+    "roles": {
+      "class": 289,
+      "data": 91,
+      "function": 462,
+      "attr": 186,
+      "module": 38
+    },
+    "sample_objects": [
+      {
+        "name": "pydantic.AfterValidator",
+        "domain": "py",
+        "role": "class",
+        "priority": "2",
+        "uri": "api/functional_validators/#pydantic.functional_validators.AfterValidator",
+        "uri_expanded": "api/functional_validators/#pydantic.functional_validators.AfterValidator"
+      },
+      {
+        "name": "pydantic.Base64Bytes",
+        "domain": "py",
+        "role": "data",
+        "priority": "2",
+        "uri": "api/types/#pydantic.types.Base64Bytes",
+        "uri_expanded": "api/types/#pydantic.types.Base64Bytes"
+      },
+      {
+        "name": "pydantic.BaseModel.__init__",
+        "domain": "py",
+        "role": "function",
+        "priority": "1",
+        "uri": "api/base_model/#$",
+        "uri_expanded": "api/base_model/#pydantic.BaseModel.__init__"
+      },
+      {
+        "name": "pydantic.BaseModel.__pydantic_core_schema__",
+        "domain": "py",
+        "role": "attr",
+        "priority": "1",
+        "uri": "api/base_model/#$",
+        "uri_expanded": "api/base_model/#pydantic.BaseModel.__pydantic_core_schema__"
+      },
+      {
+        "name": "pydantic.alias_generators",
+        "domain": "py",
+        "role": "module",
+        "priority": "1",
+        "uri": "api/config/#$",
+        "uri_expanded": "api/config/#pydantic.alias_generators"
+      }
+    ]
+  }
+}
