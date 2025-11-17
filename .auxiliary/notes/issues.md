@@ -121,54 +121,6 @@ class IngestCommand:
 
 ---
 
-### Issue #3: CLI Hang When Invoked via `python -m lmscribbles`
-
-**Status**: Open
-**Priority**: High
-**Discovered**: 2025-11-16 (documented in ingest-command--progress.md)
-**Affects**: CLI entry point in sources/lmscribbles/__main__.py
-
-**Description**:
-The CLI interface hangs indefinitely when invoked via `python -m lmscribbles ingest ...`, but direct instantiation of IngestCommand works perfectly.
-
-**Symptoms**:
-- Command hangs without output
-- No error messages
-- Requires Ctrl+C to interrupt
-- Programmatic instantiation works: `IngestCommand(...)()`
-
-**Suspected Causes**:
-1. Tyro parsing issue with Annotated types
-2. Async context manager setup in `_main()`
-3. Circular import or initialization deadlock
-4. Problem with default command configuration
-
-**Investigation Steps**:
-1. Add debug logging to `__main__.py` and `cli.py` entry points
-2. Test with minimal tyro example to isolate issue
-3. Check tyro version compatibility with Annotated types
-4. Review vibelinter for differences in tyro usage
-5. Compare with working appcore CLI patterns
-
-**Workarounds**:
-- Direct instantiation for testing
-- None for end users
-
-**Related Issues**:
-- Related to Issue #2 (tyro configuration)
-
-**Related Code Locations**:
-- sources/lmscribbles/__main__.py - Entry point
-- sources/lmscribbles/cli.py - CLI setup and _main()
-
-**Next Steps**:
-1. Add verbose logging to identify where hang occurs
-2. Create minimal reproducible example
-3. Test with tyro debugging mode
-4. Check for async context issues
-
----
-
 ## Resolved Issues
 
 None yet.
