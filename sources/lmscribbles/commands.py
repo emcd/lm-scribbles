@@ -23,24 +23,24 @@
 
 from hashlib import sha256 as _sha256
 from json import dumps as _json_dumps
-from pathlib import Path as _Path
 from shutil import copy2 as _copy_file
 
-from . import __, exceptions
+from . import __
+from . import exceptions as _exceptions
 
 
 # Type Aliases
-Location: __.typx.TypeAlias = str | __.typx.Any  # Path-like
-PathPair: __.typx.TypeAlias = tuple[ _Path, _Path ]
+Location: __.typx.TypeAlias = str | __.Path  # Path-like
+PathPair: __.typx.TypeAlias = tuple[ __.Path, __.Path ]
 
 
 class IngestResult( __.immut.DataclassObject ):
     ''' Results of ingestion operation. '''
 
-    copied: __.immut.Dictionary[ _Path, _Path ]
-    skipped: __.immut.Dictionary[ _Path, str ]
-    renamed: __.immut.Dictionary[ _Path, PathPair ]
-    failed: __.immut.Dictionary[ _Path, str ]
+    copied: __.immut.Dictionary[ __.Path, __.Path ]
+    skipped: __.immut.Dictionary[ __.Path, str ]
+    renamed: __.immut.Dictionary[ __.Path, PathPair ]
+    failed: __.immut.Dictionary[ __.Path, str ]
     warnings: __.cabc.Sequence[ str ]
 
     def render_as_json( self ) -> str:
@@ -125,25 +125,21 @@ class IngestCommand( __.immut.DataclassObject ):
 
     async def __call__( self ) -> int:
         ''' Executes ingestion command. '''
-        target_dir = _Path( self.target_base ) / self.project_name
-
+        target_dir = __.Path( self.target_base ) / self.project_name
         # Collect source files
         source_files = list( self._discover_source_files( ) )
         if not source_files:
             print( "No files found to ingest." )
             return 0
-
         # Ensure target directory exists (unless dry-run)
         if not self.dry_run:
             target_dir.mkdir( parents = True, exist_ok = True )
-
         # Process files
-        copied: dict[ _Path, _Path ] = { }
-        skipped: dict[ _Path, str ] = { }
-        renamed: dict[ _Path, PathPair ] = { }
-        failed: dict[ _Path, str ] = { }
+        copied: dict[ __.Path, __.Path ] = { }
+        skipped: dict[ __.Path, str ] = { }
+        renamed: dict[ __.Path, PathPair ] = { }
+        failed: dict[ __.Path, str ] = { }
         warnings: list[ str ] = [ ]
-
         for source in source_files:
             try:
                 result = await self._process_file(
@@ -151,14 +147,12 @@ class IngestCommand( __.immut.DataclassObject ):
             except Exception as exception:
                 failed[ source ] = str( exception )
                 continue
-
             if result is None:  # skipped
                 skipped[ source ] = "Same content already exists"
             elif isinstance( result, tuple ):  # renamed
                 renamed[ source ] = result
             else:  # copied
                 copied[ source ] = result
-
         # Create and render result
         result_obj = IngestResult(
             copied = __.immut.Dictionary( copied ),
@@ -167,14 +161,13 @@ class IngestCommand( __.immut.DataclassObject ):
             failed = __.immut.Dictionary( failed ),
             warnings = tuple( warnings ),
         )
-
         print( result_obj.render_as_text( ) )
         return 1 if failed else 0
 
-    def _discover_source_files( self ) -> __.cabc.Iterator[ _Path ]:
+    def _discover_source_files( self ) -> __.cabc.Iterator[ __.Path ]:
         ''' Discovers all source files to ingest. '''
         for location in self.source_paths:
-            path = _Path( location )
+            path = __.Path( location )
             if path.is_file( ):
                 yield path
             elif path.is_dir( ):
@@ -184,14 +177,14 @@ class IngestCommand( __.immut.DataclassObject ):
                     if item.is_file( ):
                         yield item
             else:
-                raise exceptions.FileIngestionFailure( str( path ) )
+                raise _exceptions.FileIngestionFailure( str( path ) )
 
     async def _process_file(
         self,
-        source: _Path,
-        target_dir: _Path,
+        source: __.Path,
+        target_dir: __.Path,
         warnings: list[ str ],
-    ) -> _Path | PathPair | None:
+    ) -> __.Path | PathPair | None:
         ''' Processes single file for ingestion.
 
             Returns:
@@ -202,36 +195,28 @@ class IngestCommand( __.immut.DataclassObject ):
         # Check for secrets
         if self.check_secrets:
             await self._check_secrets( source, warnings )
-
         # Determine target path
         target_path = target_dir / source.name
-
         # Check for duplicate name
         if target_path.exists( ):
             source_hash = self._compute_hash( source )
             target_hash = self._compute_hash( target_path )
-
             if source_hash == target_hash:
                 return None  # Skip - same content
-
             # Different content - rename with hash suffix
             stem = target_path.stem
             suffix = target_path.suffix
             hash_suffix = source_hash[ :6 ]
             renamed_path = target_dir / f"{stem}-{hash_suffix}{suffix}"
-
             if not self.dry_run:
                 _copy_file( source, renamed_path )
-
             return ( target_path, renamed_path )
-
         # No duplicate - copy normally
         if not self.dry_run:
             _copy_file( source, target_path )
-
         return target_path
 
-    def _compute_hash( self, file_path: _Path ) -> str:
+    def _compute_hash( self, file_path: __.Path ) -> str:
         ''' Computes SHA-256 hash of file contents. '''
         hasher = _sha256( )
         try:
@@ -239,24 +224,22 @@ class IngestCommand( __.immut.DataclassObject ):
                 while chunk := file.read( 8192 ):
                     hasher.update( chunk )
         except OSError as exception:
-            raise exceptions.DuplicateDetectionFailure(
+            raise _exceptions.DuplicateDetectionFailure(
                 str( file_path ) ) from exception
         return hasher.hexdigest( )
 
     async def _check_secrets(
         self,
-        file_path: _Path,
+        file_path: __.Path,
         warnings: list[ str ],
     ) -> None:
         ''' Checks file for secrets and adds warnings. '''
         try:
             from detect_secrets import SecretsCollection
             from detect_secrets.settings import default_settings
-
             secrets = SecretsCollection( )
             with default_settings( ):
                 secrets.scan_file( str( file_path ) )
-
             if secrets.data:
                 secret_count = sum(
                     len( file_secrets )
@@ -265,7 +248,7 @@ class IngestCommand( __.immut.DataclassObject ):
                 msg = f"Secrets in {file_path}: {secret_count} found"
                 warnings.append( msg )
         except Exception as exception:
-            raise exceptions.SecretDetectionFailure(
+            raise _exceptions.SecretDetectionFailure(
                 str( file_path ) ) from exception
 
 

@@ -25,6 +25,7 @@
 
 import collections.abc as   cabc
 import types
+from pathlib import         Path
 
 import typing_extensions as typx
 # --- BEGIN: Injected by Copier ---

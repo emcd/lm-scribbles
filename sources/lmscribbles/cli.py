@@ -21,7 +21,8 @@
 ''' Command-line interface. '''
 
 
-from . import __, commands
+from . import __
+from . import commands as _commands
 
 
 def execute( ) -> None:
@@ -31,7 +32,7 @@ def execute( ) -> None:
         __.tyro.conf.EnumChoicesFromValues,
         __.tyro.conf.HelptextFromCommentsOff,
     )
-    try: run( __.tyro.cli( _main, config = config )( ) ) # pyright: ignore
+    try: run( __.tyro.cli( _main, config = config ) ) # pyright: ignore
     except SystemExit: raise
     except BaseException:
         # TODO: Log exception.
@@ -41,16 +42,16 @@ def execute( ) -> None:
 async def _main(
     command: __.typx.Union[
         __.typx.Annotated[
-            commands.IngestCommand,
+            _commands.IngestCommand,
             __.tyro.conf.subcommand(
                 'ingest', prefix_name = False, default = True ),
         ],
         __.typx.Annotated[
-            commands.ClassifyCommand,
+            _commands.ClassifyCommand,
             __.tyro.conf.subcommand( 'classify', prefix_name = False ),
         ],
         __.typx.Annotated[
-            commands.SearchCommand,
+            _commands.SearchCommand,
             __.tyro.conf.subcommand( 'search', prefix_name = False ),
         ],
     ],
