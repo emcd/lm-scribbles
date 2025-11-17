@@ -57,4 +57,5 @@ async def _main(
     ],
 ) -> None:
     ''' Main CLI entrypoint with subcommands. '''
-    await command( )
+    result = await command( )
+    print( result.render_as_text( ) )

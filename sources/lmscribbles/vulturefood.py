@@ -21,8 +21,24 @@
 ''' Whitelist of intentionally unused code for vulture. '''
 
 
-from .commands import IngestResult
+from .commands import ClassifyResult, IngestResult, SearchResult
+from .exceptions import (
+    DuplicateDetectionFailure,
+    FileIngestionFailure,
+    Omniexception,
+    SecretDetectionFailure,
+)
 
 
 # Self-rendering methods that will be called dynamically
 IngestResult.render_as_json
+ClassifyResult.render_as_json
+SearchResult.render_as_json
+Omniexception.render_as_json
+Omniexception.render_as_text
+DuplicateDetectionFailure.render_as_json
+DuplicateDetectionFailure.render_as_text
+FileIngestionFailure.render_as_json
+FileIngestionFailure.render_as_text
+SecretDetectionFailure.render_as_json
+SecretDetectionFailure.render_as_text

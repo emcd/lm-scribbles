@@ -27,6 +27,19 @@ from . import __
 class Omniexception( __.immut.exceptions.Omniexception ):
     ''' Base for all exceptions raised by package API. '''
 
+    def render_as_text( self ) -> str:
+        ''' Renders exception as human-readable text. '''
+        return f"{self.__class__.__name__}: {self}"
+
+    def render_as_json( self ) -> str:
+        ''' Renders exception as JSON string. '''
+        from json import dumps as _json_dumps
+        data: dict[ str, __.typx.Any ] = {
+            'exception': self.__class__.__name__,
+            'message': str( self ),
+        }
+        return _json_dumps( data, indent = 2 )
+
 
 class Omnierror( Omniexception, Exception ):
     ''' Base for error exceptions raised by package API. '''
@@ -35,10 +48,52 @@ class Omnierror( Omniexception, Exception ):
 class DuplicateDetectionFailure( Omnierror, OSError ):
     ''' Duplicate detection failure. '''
 
+    def render_as_text( self ) -> str:
+        ''' Renders exception with file path details. '''
+        return f"Duplicate detection failed for: {self}"
+
+    def render_as_json( self ) -> str:
+        ''' Renders exception with file path details as JSON. '''
+        from json import dumps as _json_dumps
+        data: dict[ str, __.typx.Any ] = {
+            'exception': self.__class__.__name__,
+            'file_path': str( self ),
+            'message': 'Failed to compute file hash for duplicate detection',
+        }
+        return _json_dumps( data, indent = 2 )
+
 
 class FileIngestionFailure( Omnierror, OSError ):
     ''' File ingestion failure. '''
 
+    def render_as_text( self ) -> str:
+        ''' Renders exception with file path details. '''
+        return f"File ingestion failed for: {self}"
+
+    def render_as_json( self ) -> str:
+        ''' Renders exception with file path details as JSON. '''
+        from json import dumps as _json_dumps
+        data: dict[ str, __.typx.Any ] = {
+            'exception': self.__class__.__name__,
+            'file_path': str( self ),
+            'message': 'Invalid file path (not a file or directory)',
+        }
+        return _json_dumps( data, indent = 2 )
+
 
 class SecretDetectionFailure( Omnierror, RuntimeError ):
     ''' Secret detection failure. '''
+
+    def render_as_text( self ) -> str:
+        ''' Renders exception with file path details. '''
+        return f"Secret detection failed for: {self}"
+
+    def render_as_json( self ) -> str:
+        ''' Renders exception with file path details as JSON. '''
+        from json import dumps as _json_dumps
+        data: dict[ str, __.typx.Any ] = {
+            'exception': self.__class__.__name__,
+            'file_path': str( self ),
+            'message': 'Failed to scan file for secrets',
+        }
+        return _json_dumps( data, indent = 2 )
