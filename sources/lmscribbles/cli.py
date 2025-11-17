@@ -22,6 +22,30 @@
 
 
 from . import __
+from . import commands as _commands
+
+
+class Cli( __.immut.DataclassObject ):
+    ''' Command-line interface for scribbles management. '''
+    command: __.typx.Union[
+        __.typx.Annotated[
+            _commands.IngestCommand,
+            __.tyro.conf.subcommand(
+                'ingest', prefix_name = False, default = True ),
+        ],
+        __.typx.Annotated[
+            _commands.ClassifyCommand,
+            __.tyro.conf.subcommand( 'classify', prefix_name = False ),
+        ],
+        __.typx.Annotated[
+            _commands.SearchCommand,
+            __.tyro.conf.subcommand( 'search', prefix_name = False ),
+        ],
+    ]
+    async def __call__( self ) -> None:
+        ''' Executes the selected command. '''
+        result = await self.command( )
+        print( result.render_as_text( ) )
 
 
 def execute( ) -> None:
@@ -31,12 +55,8 @@ def execute( ) -> None:
         __.tyro.conf.EnumChoicesFromValues,
         __.tyro.conf.HelptextFromCommentsOff,
     )
-    try: run( __.tyro.cli( _main, config = config )( ) ) # pyright: ignore
+    try: run( __.tyro.cli( Cli, config = config )( ) ) # pyright: ignore
     except SystemExit: raise
     except BaseException:
         # TODO: Log exception.
         raise SystemExit( 1 ) from None
-
-
-async def _main( ) -> None:
-    print( "Hello from lmscribbles CLI!" )

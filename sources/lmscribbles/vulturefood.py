@@ -18,22 +18,27 @@
 #============================================================================#
 
 
-''' Common imports used throughout the package. '''
-
-# ruff: noqa: F401
+''' Whitelist of intentionally unused code for vulture. '''
 
 
-import collections.abc as   cabc
-import types
-from pathlib import         Path
+from .commands import ClassifyResult, IngestResult, SearchResult
+from .exceptions import (
+    DuplicateDetectionFailure,
+    FileIngestionFailure,
+    Omniexception,
+    SecretDetectionFailure,
+)
 
-import typing_extensions as typx
-# --- BEGIN: Injected by Copier ---
-import dynadoc as           ddoc
-import frigid as            immut
-import tyro
-# --- END: Injected by Copier ---
 
-# --- BEGIN: Injected by Copier ---
-from absence import Absential, absent, is_absent
-# --- END: Injected by Copier ---
+# Self-rendering methods that will be called dynamically
+IngestResult.render_as_json
+ClassifyResult.render_as_json
+SearchResult.render_as_json
+Omniexception.render_as_json
+Omniexception.render_as_text
+DuplicateDetectionFailure.render_as_json
+DuplicateDetectionFailure.render_as_text
+FileIngestionFailure.render_as_json
+FileIngestionFailure.render_as_text
+SecretDetectionFailure.render_as_json
+SecretDetectionFailure.render_as_text
