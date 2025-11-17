@@ -1,0 +1,511 @@
+# Selection Index for python-librovore Scribbles
+#
+# This file catalogs selected scribbles from the python-librovore project
+# that demonstrate valuable patterns, novel approaches, or insightful analysis.
+#
+# Format: Each selected script has a corresponding entry with:
+# - labels: Categorization tags (purpose, quality, tech, scope)
+# - description: What the script does
+# - selection_rationale: Why it was selected
+# - related_files: Connected artifacts (data, output, source)
+
+[metadata]
+project = "python-librovore"
+source_directory = "ingests/python-librovore"
+selections_created = "2025-11-17T22:38:00Z"
+total_ingested_files = 190
+total_selected = 14
+selection_rate = "7.4%"  # 14/190
+selector = "Claude Code (Sonnet 4.5)"
+
+# Selection criteria used:
+# - Comprehensive analysis scripts with actionable insights
+# - Stats/metrics gathering with novel techniques
+# - Architectural verification and testing
+# - Pattern extraction and structural analysis
+# - Novel experimental approaches (DI, testing strategies)
+
+[metadata.label_distribution]
+"purpose:analysis" = 10
+"purpose:test-poc" = 3
+"purpose:debug" = 1
+"quality:gem" = 8
+"quality:interesting" = 6
+"scope:comprehensive" = 7
+"scope:moderate" = 7
+
+##############################################################################
+# COMPREHENSIVE ANALYSIS SCRIPTS
+##############################################################################
+
+[selections.comprehensive_summary]
+labels = [
+    "purpose:analysis",
+    "quality:gem",
+    "topic:sphinx-themes",
+    "tech:web-scraping",
+    "scope:comprehensive",
+    "format:script"
+]
+description = "Cross-theme Sphinx documentation analysis aggregating patterns across 8 Sphinx themes (furo, rtd, pydata, python-docs, alabaster, agogo, classic, nature)"
+selection_rationale = """
+Demonstrates comprehensive analytical approach:
+- Aggregates data from multiple theme samples
+- Identifies universal patterns (code blocks, API docs)
+- Provides actionable extraction strategy recommendations
+- Uses emojis for visual reporting (engaging output)
+- Groups findings by consistency/theme-specificity
+
+Value: Excellent example of cross-cutting analysis with practical outcomes.
+Pattern shows how to synthesize multiple data sources into actionable insights.
+"""
+related_files = [
+    ".auxiliary/scribbles/sphinx-samples/analysis_results.json"
+]
+loc = 176
+techniques = ["defaultdict aggregation", "pattern classification", "comparative analysis"]
+
+[selections.inventory_search_analysis]
+labels = [
+    "purpose:analysis",
+    "quality:gem",
+    "topic:mkdocs-sphinx-integration",
+    "tech:async",
+    "tech:web-scraping",
+    "scope:comprehensive",
+    "format:script"
+]
+description = "Analyzes relationship between Sphinx object inventories and MkDocs search indexes to guide content extraction from mkdocstrings sites"
+selection_rationale = """
+Novel integration analysis:
+- Tests multiple documentation sites (Pydantic, FastAPI, mkdocstrings)
+- Checks for objects.inv availability and accessibility
+- Analyzes search index structure for content patterns
+- Downloads inventories for offline analysis
+- Exports structured JSON results
+
+Value: Shows sophisticated async HTTP analysis with practical output.
+Demonstrates multi-site comparison methodology with artifact generation.
+"""
+related_files = [
+    "inventory_search_analysis.json",
+    "objects_*.inv"  # Downloaded inventory files
+]
+loc = 172
+techniques = ["async HTTP client", "URL composition", "pattern detection", "artifact generation"]
+
+[selections.tyro_inventory_analysis]
+labels = [
+    "purpose:analysis",
+    "quality:interesting",
+    "topic:documentation-search",
+    "tech:async",
+    "tech:testing",
+    "scope:comprehensive",
+    "format:script"
+]
+description = "Queries Tyro documentation inventory to search for specific objects (mutex-related) with full inventory export"
+selection_rationale = """
+Demonstrates API usage analysis:
+- Uses librovore API to query complete documentation inventory
+- Searches for specific patterns ('mutex', 'exclusive', 'group')
+- Provides detailed object metadata display
+- Exports full inventory to JSON for further analysis
+- Shows API exploration methodology
+
+Value: Good example of using project API for documentation research.
+Shows systematic search and export workflow.
+"""
+related_files = [
+    "tyro_full_inventory.json"
+]
+loc = 129
+techniques = ["API-driven analysis", "pattern matching", "full dataset export"]
+
+##############################################################################
+# STATS & METRICS GATHERING
+##############################################################################
+
+[selections.analyze_test_delays]
+labels = [
+    "purpose:analysis",
+    "quality:interesting",
+    "topic:test-performance",
+    "tech:testing",
+    "scope:moderate",
+    "format:script"
+]
+description = "Static analysis of test files to identify unmocked asyncio.sleep calls causing test delays"
+selection_rationale = """
+Novel performance debugging approach:
+- Parses test file source code with regex
+- Identifies async functions that call sleep-triggering methods
+- Cross-references with mock_sleep usage to find gaps
+- Provides actionable list of problematic tests
+
+Value: Demonstrates static code analysis for performance optimization.
+Clever use of regex to diagnose test suite slowness without running tests.
+"""
+related_files = [
+    "tests/test_000_librovore/test_110_cacheproxy.py"
+]
+loc = 52
+techniques = ["regex AST traversal", "cross-reference analysis", "performance diagnosis"]
+
+[selections.analyze_coverage_gaps]
+labels = [
+    "purpose:analysis",
+    "quality:gem",
+    "topic:test-coverage",
+    "tech:testing",
+    "scope:comprehensive",
+    "format:script"
+]
+description = "Parses XML coverage reports to categorize gaps by difficulty (easy/medium/hard/integration) with test overlap analysis"
+selection_rationale = """
+Sophisticated coverage analysis:
+- Parses coverage.xml with ElementTree
+- Categorizes gaps by testing difficulty
+- Analyzes test overlap to identify redundancy
+- Provides prioritized recommendations
+
+Value: Excellent example of turning raw metrics into actionable insights.
+Shows how to categorize technical debt by difficulty/priority.
+"""
+related_files = [
+    ".auxiliary/artifacts/coverage-pytest/coverage.xml"
+]
+loc = 141
+techniques = ["XML parsing", "gap categorization", "overlap detection", "priority analysis"]
+
+[selections.benchmark_inventory]
+labels = [
+    "purpose:test-poc",
+    "quality:interesting",
+    "topic:performance",
+    "tech:testing",
+    "scope:minimal",
+    "format:script"
+]
+description = "Simple performance benchmarking for inventory parsing with timing statistics"
+selection_rationale = """
+Clean benchmarking pattern:
+- Times single extraction
+- Runs multiple iterations to detect caching effects
+- Calculates min/max/average times
+- Concise, focused implementation
+
+Value: Good template for simple performance benchmarking.
+Shows how to detect caching behavior through repeated runs.
+"""
+related_files = []
+loc = 51
+techniques = ["time.time() benchmarking", "iteration analysis", "statistics calculation"]
+
+##############################################################################
+# ARCHITECTURAL ANALYSIS & VERIFICATION
+##############################################################################
+
+[selections.verify_architecture]
+labels = [
+    "purpose:test-poc",
+    "quality:interesting",
+    "topic:architecture",
+    "tech:testing",
+    "scope:minimal",
+    "format:script"
+]
+description = "Simple verification script testing architectural fixes: dynamic imports, no hardcoded mappings, import separation"
+selection_rationale = """
+Demonstrates architectural testing:
+- Tests dynamic builtin import functionality
+- Uses inspect.getsource() to verify no hardcoded mappings
+- Checks import separation constraints
+- Minimal but effective validation
+
+Value: Shows how to verify architectural decisions programmatically.
+Uses source code inspection for compliance checking.
+"""
+related_files = []
+loc = 27
+techniques = ["dynamic imports", "source introspection", "constraint validation"]
+
+[selections.verify_architecture_v2]
+labels = [
+    "purpose:test-poc",
+    "quality:gem",
+    "topic:architecture",
+    "tech:testing",
+    "scope:moderate",
+    "format:script"
+]
+description = "Comprehensive architectural verification with emoji reporting: processor loading, module organization, warning presence"
+selection_rationale = """
+Enhanced architectural validation:
+- Tests 7 distinct architectural requirements
+- Uses inspect.getsource() for deep code analysis
+- Checks both positive (has feature) and negative (doesn't have anti-pattern) conditions
+- Provides visual pass/fail reporting with emojis
+- Final summary shows overall architecture health
+
+Value: Excellent example of comprehensive architecture testing.
+Shows progression from simple (v1) to thorough (v2) validation.
+"""
+related_files = [
+    "verify_architecture.py"  # Earlier version
+]
+loc = 61
+techniques = ["source introspection", "multi-assertion testing", "visual reporting"]
+
+[selections.comprehensive_dual_test]
+labels = [
+    "purpose:test-poc",
+    "quality:gem",
+    "topic:architecture",
+    "tech:async",
+    "tech:testing",
+    "scope:comprehensive",
+    "format:script"
+]
+description = "Tests dual registry architecture: processor separation, detection routing, cache separation with detailed reporting"
+selection_rationale = """
+Sophisticated architecture integration test:
+- Tests registry separation (inventory vs structure processors)
+- Validates detection system routing
+- Verifies cache separation between processor types
+- Uses real test files for validation
+- Provides detailed step-by-step output
+
+Value: Demonstrates thorough integration testing of complex architecture.
+Shows how to test separation of concerns across multiple subsystems.
+"""
+related_files = [
+    "tests/data/inventories/librovore/objects.inv"
+]
+loc = 90
+techniques = ["registry testing", "cache introspection", "routing validation", "async testing"]
+
+[selections.robots_analysis]
+labels = [
+    "purpose:debug",
+    "quality:gem",
+    "topic:error-handling",
+    "tech:testing",
+    "scope:moderate",
+    "format:script"
+]
+description = "Analyzes RobotsTxtAccessFailure handling to diagnose why robots.txt failures abort processing instead of being ignored"
+selection_rationale = """
+Excellent problem diagnosis script:
+- Creates sample exception to test behavior
+- Wraps in Error generic to simulate cache scenario
+- Shows extract() re-raises exception (root cause)
+- Provides clear problem analysis and explanation
+- Documents expected vs actual behavior
+
+Value: Perfect example of using code exploration to diagnose subtle bugs.
+Shows how to isolate and demonstrate error handling issues.
+"""
+related_files = []
+loc = 70
+techniques = ["exception simulation", "behavior analysis", "problem documentation"]
+
+##############################################################################
+# PATTERN EXTRACTION & STRUCTURAL ANALYSIS
+##############################################################################
+
+[selections.extract_code_patterns]
+labels = [
+    "purpose:analysis",
+    "quality:interesting",
+    "topic:sphinx-themes",
+    "tech:web-scraping",
+    "scope:minimal",
+    "format:script"
+]
+description = "Extracts and displays code block and API documentation patterns from Sphinx theme analysis results"
+selection_rationale = """
+Clean data extraction and display:
+- Loads JSON analysis results
+- Iterates through code blocks showing structure
+- Displays API documentation patterns
+- Provides preview of content
+
+Value: Simple but effective pattern visualization.
+Good template for displaying structured analysis results.
+"""
+related_files = [
+    ".auxiliary/scribbles/sphinx-samples/analysis_results.json"
+]
+loc = 41
+techniques = ["JSON loading", "data iteration", "preview generation"]
+
+[selections.section_analysis]
+labels = [
+    "purpose:analysis",
+    "quality:interesting",
+    "topic:sphinx-themes",
+    "tech:web-scraping",
+    "scope:minimal",
+    "format:script"
+]
+description = "Analyzes section structure patterns (headings, containers, navigation) for content extraction from Sphinx themes"
+selection_rationale = """
+Structural pattern analysis:
+- Analyzes heading hierarchy and attributes
+- Groups section containers by selector
+- Identifies navigation patterns
+- Shows child element counts
+
+Value: Demonstrates structure-focused analysis approach.
+Shows how to understand document organization patterns.
+"""
+related_files = [
+    ".auxiliary/scribbles/sphinx-samples/analysis_results.json"
+]
+loc = 49
+techniques = ["hierarchical analysis", "selector grouping", "pattern counting"]
+
+[selections.compare_schemas]
+labels = [
+    "purpose:analysis",
+    "quality:interesting",
+    "topic:mcp-integration",
+    "tech:async",
+    "tech:testing",
+    "scope:moderate",
+    "format:script"
+]
+description = "Compares MCP server tool schemas across different servers (Sphinx MCP, Context7, Pyright) to understand parameter patterns"
+selection_rationale = """
+Cross-server MCP analysis:
+- Connects to multiple MCP servers asynchronously
+- Extracts tool schemas and parameters
+- Identifies required vs optional parameters
+- Handles server availability gracefully
+
+Value: Shows how to analyze and compare API schemas programmatically.
+Demonstrates MCP client usage for introspection.
+"""
+related_files = []
+loc = 60
+techniques = ["MCP client usage", "schema introspection", "multi-server comparison"]
+
+##############################################################################
+# NOVEL EXPERIMENTS & PROPOSALS
+##############################################################################
+
+[selections.delay_injection_proposal]
+labels = [
+    "purpose:analysis",
+    "quality:gem",
+    "topic:dependency-injection",
+    "tech:async",
+    "tech:testing",
+    "scope:moderate",
+    "format:document"
+]
+description = "Proposes dependency injection pattern for asyncio.sleep to enable fast, mockable tests without global patching"
+selection_rationale = """
+Excellent design proposal:
+- Identifies current problem (hard-coded asyncio.sleep)
+- Proposes dependency injection solution
+- Provides production and test implementations
+- Shows before/after code examples
+- Includes type annotations and class patterns
+
+Value: Perfect example of architectural proposal documentation.
+Shows thoughtful design evolution from problematic to testable pattern.
+Demonstrates best practices for testability through DI.
+"""
+related_files = [
+    "delay_injection_implementation.py"  # Possible implementation
+]
+loc = 67
+techniques = ["dependency injection", "type aliases", "mock patterns", "design proposal"]
+
+##############################################################################
+# SUMMARY STATISTICS
+##############################################################################
+
+[statistics]
+total_selected = 14
+total_ingested = 190
+selection_rate = 7.4
+
+[statistics.by_purpose]
+analysis = 10
+"test-poc" = 3
+debug = 1
+
+[statistics.by_quality]
+gem = 8
+interesting = 6
+
+[statistics.by_scope]
+comprehensive = 7
+moderate = 7
+minimal = 3  # Note: Minimal doesn't mean low value - often very focused gems
+
+[statistics.by_tech]
+testing = 9
+"web-scraping" = 5
+async = 5
+"sphinx-themes" = 4
+
+[statistics.average_loc]
+# Lines of code statistics
+mean = 79
+median = 61
+min = 27
+max = 176
+
+##############################################################################
+# SELECTION INSIGHTS
+##############################################################################
+
+[insights]
+dominant_pattern = "Comprehensive analysis scripts with actionable recommendations"
+valuable_minority = "Architectural verification and design proposals"
+surprising_find = "High quality of analysis documents - well-structured, insightful"
+
+[insights.key_techniques_observed]
+source_introspection = ["verify_architecture.py", "verify_architecture_v2.py"]
+async_http_analysis = ["inventory_search_analysis.py", "compare_schemas.py"]
+cross_cutting_aggregation = ["comprehensive_summary.py"]
+coverage_analysis = ["analyze_coverage_gaps.py"]
+design_proposals = ["delay_injection_proposal.py"]
+
+[insights.multi_file_relationships]
+# Scripts that work with related artifacts
+"comprehensive_summary.py" = ["extract_code_patterns.py", "section_analysis.py"]
+"inventory_search_analysis.py" = ["tyro_inventory_analysis.py"]
+"verify_architecture.py" = ["verify_architecture_v2.py"]
+
+##############################################################################
+# RECOMMENDATIONS FOR FUTURE CLASSIFICATIONS
+##############################################################################
+
+[recommendations]
+high_value_indicators = [
+    "Comprehensive cross-cutting analysis",
+    "Actionable recommendations or insights",
+    "Novel testing/analysis techniques",
+    "Architectural proposals with before/after examples",
+    "Multi-source data aggregation"
+]
+
+auto_classification_hints = [
+    "*_analysis.py → purpose:analysis",
+    "verify_* → purpose:test-poc + topic:architecture",
+    "benchmark_* → purpose:test-poc + topic:performance",
+    "*_proposal.py → quality:gem + format:document",
+    "comprehensive_* → scope:comprehensive"
+]
+
+quality_gem_criteria = [
+    "Provides actionable insights beyond raw data",
+    "Demonstrates novel or sophisticated techniques",
+    "Well-documented with clear problem/solution",
+    "Could serve as template for similar analyses"
+]

@@ -1,0 +1,1 @@
+../../ingests/python-librovore/compare_schemas.py

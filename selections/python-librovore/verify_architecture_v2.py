@@ -1,0 +1,1 @@
+../../ingests/python-librovore/verify_architecture_v2.py
