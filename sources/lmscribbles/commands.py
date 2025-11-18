@@ -32,20 +32,26 @@ from . import exceptions as _exceptions
 # Type Aliases
 Location: __.typx.TypeAlias = str | __.Path  # Path-like
 PathPair: __.typx.TypeAlias = tuple[ __.Path, __.Path ]
+# Base path and file path tuple for preserving directory structure
+SourceFileTuple: __.typx.TypeAlias = tuple[ __.Path, __.Path ]
 
 
 def _discover_source_files(
     source_paths: __.cabc.Sequence[ Location ],
-) -> __.cabc.Iterator[ __.Path ]:
-    ''' Discovers all source files to ingest. '''
+) -> __.cabc.Iterator[ SourceFileTuple ]:
+    ''' Discovers all source files with their base paths.
+
+        Returns tuples of (base_path, file_path) where base_path is used
+        to calculate relative paths for preserving directory structure.
+    '''
     for location in source_paths:
         path = __.Path( location )
         if path.is_file( ):
-            yield path
+            yield ( path.parent, path )
         elif path.is_dir( ):
             for item in path.rglob( '*' ):
                 if item.is_file( ):
-                    yield item
+                    yield ( path, item )
         else:
             raise _exceptions.FileIngestionFailure( str( path ) )
 
@@ -86,7 +92,8 @@ async def _check_secrets(
             str( file_path ) ) from exception
 
 
-async def _process_file(
+async def _process_file(  # noqa: PLR0913
+    base_path: __.Path,
     source: __.Path,
     target_dir: __.Path,
     warnings: list[ str ],
@@ -94,31 +101,35 @@ async def _process_file(
     dry_run: bool,
 ) -> __.Path | PathPair | None:
     ''' Processes single file for ingestion.
+
+        Preserves directory structure relative to base_path.
+
         Returns:
             - Path: Successfully copied to this destination
             - PathPair: Renamed due to duplicate
             - None: Skipped (duplicate content)
     '''
-    # Check for secrets
     if check_secrets:
         await _check_secrets( source, warnings )
-    # Determine target path
-    target_path = target_dir / source.name
-    # Check for duplicate name
+    try:
+        relative_path = source.relative_to( base_path )
+    except ValueError as exception:
+        raise _exceptions.FileIngestionFailure( str( source ) ) from exception
+    target_path = target_dir / relative_path
+    if not dry_run:
+        target_path.parent.mkdir( parents = True, exist_ok = True )
     if target_path.exists( ):
         source_hash = _compute_hash( source )
         target_hash = _compute_hash( target_path )
         if source_hash == target_hash:
-            return None  # Skip - same content
-        # Different content - rename with hash suffix
+            return None
         stem = target_path.stem
         suffix = target_path.suffix
         hash_suffix = source_hash[ :6 ]
-        renamed_path = target_dir / f"{stem}-{hash_suffix}{suffix}"
+        renamed_path = target_path.parent / f"{stem}-{hash_suffix}{suffix}"
         if not dry_run:
             _copy_file( source, renamed_path )
         return ( target_path, renamed_path )
-    # No duplicate - copy normally
     if not dry_run:
         _copy_file( source, target_path )
     return target_path
@@ -187,29 +198,33 @@ class IngestCommand( __.immut.DataclassObject ):
 
     project_name: __.typx.Annotated[
         str,
+        __.tyro.conf.arg( prefix_name = False ),
         __.ddoc.Doc( ''' Target project name for ingestion. ''' ),
     ]
     source_paths: __.typx.Annotated[
         __.cabc.Sequence[ Location ],
+        __.tyro.conf.arg( prefix_name = False ),
         __.ddoc.Doc( ''' Source file(s) or directory to ingest. ''' ),
     ]
     target_base: __.typx.Annotated[
         Location,
+        __.tyro.conf.arg( prefix_name = False ),
         __.ddoc.Doc( ''' Base directory for ingestion. ''' ),
     ] = "ingests"
     check_secrets: __.typx.Annotated[
         bool,
+        __.tyro.conf.arg( prefix_name = False ),
         __.ddoc.Doc( ''' Enable secret detection (warnings only). ''' ),
     ] = True
     dry_run: __.typx.Annotated[
         bool,
+        __.tyro.conf.arg( prefix_name = False ),
         __.ddoc.Doc( ''' Preview operations without making changes. ''' ),
     ] = False
 
     async def __call__( self ) -> IngestResult:
         ''' Executes ingestion command. '''
         target_dir = __.Path( self.target_base ) / self.project_name
-        # Collect source files
         source_files = list( _discover_source_files( self.source_paths ) )
         if not source_files:
             return IngestResult(
@@ -219,30 +234,25 @@ class IngestCommand( __.immut.DataclassObject ):
                 failed = __.immut.Dictionary( ),
                 warnings = ( ),
             )
-        # Ensure target directory exists (unless dry-run)
-        if not self.dry_run:
-            target_dir.mkdir( parents = True, exist_ok = True )
-        # Process files
         copied: dict[ __.Path, __.Path ] = { }
         skipped: dict[ __.Path, str ] = { }
         renamed: dict[ __.Path, PathPair ] = { }
         failed: dict[ __.Path, str ] = { }
         warnings: list[ str ] = [ ]
-        for source in source_files:
+        for base_path, source in source_files:
             try:
                 result = await _process_file(
-                    source, target_dir, warnings,
+                    base_path, source, target_dir, warnings,
                     self.check_secrets, self.dry_run )
             except Exception as exception:
                 failed[ source ] = str( exception )
                 continue
-            if result is None:  # skipped
+            if result is None:
                 skipped[ source ] = "Same content already exists"
-            elif isinstance( result, tuple ):  # renamed
+            elif isinstance( result, tuple ):
                 renamed[ source ] = result
-            else:  # copied
+            else:
                 copied[ source ] = result
-        # Create and return result
         return IngestResult(
             copied = __.immut.Dictionary( copied ),
             skipped = __.immut.Dictionary( skipped ),
