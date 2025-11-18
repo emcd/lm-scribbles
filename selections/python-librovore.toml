@@ -3,11 +3,14 @@
 # This file catalogs selected scribbles from the python-librovore project
 # that demonstrate valuable patterns, novel approaches, or insightful analysis.
 #
-# Format: Each selected script has a corresponding entry with:
+# Format: Table array of selections with:
+# - filename: Name of the selected file
 # - labels: Categorization tags (purpose, quality, tech, scope)
 # - description: What the script does
 # - selection_rationale: Why it was selected
 # - related_files: Connected artifacts (data, output, source)
+# - loc: Lines of code
+# - techniques: Key techniques demonstrated
 
 [metadata]
 project = "python-librovore"
@@ -38,7 +41,8 @@ selector = "Claude Code (Sonnet 4.5)"
 # COMPREHENSIVE ANALYSIS SCRIPTS
 ##############################################################################
 
-[selections.comprehensive_summary]
+[[selections]]
+filename = "comprehensive_summary.py"
 labels = [
     "purpose:analysis",
     "quality:gem",
@@ -65,7 +69,8 @@ related_files = [
 loc = 176
 techniques = ["defaultdict aggregation", "pattern classification", "comparative analysis"]
 
-[selections.inventory_search_analysis]
+[[selections]]
+filename = "inventory_search_analysis.py"
 labels = [
     "purpose:analysis",
     "quality:gem",
@@ -94,7 +99,8 @@ related_files = [
 loc = 172
 techniques = ["async HTTP client", "URL composition", "pattern detection", "artifact generation"]
 
-[selections.tyro_inventory_analysis]
+[[selections]]
+filename = "tyro_inventory_analysis.py"
 labels = [
     "purpose:analysis",
     "quality:interesting",
@@ -126,7 +132,8 @@ techniques = ["API-driven analysis", "pattern matching", "full dataset export"]
 # STATS & METRICS GATHERING
 ##############################################################################
 
-[selections.analyze_test_delays]
+[[selections]]
+filename = "analyze_test_delays.py"
 labels = [
     "purpose:analysis",
     "quality:interesting",
@@ -152,7 +159,8 @@ related_files = [
 loc = 52
 techniques = ["regex AST traversal", "cross-reference analysis", "performance diagnosis"]
 
-[selections.analyze_coverage_gaps]
+[[selections]]
+filename = "analyze_coverage_gaps.py"
 labels = [
     "purpose:analysis",
     "quality:gem",
@@ -178,7 +186,8 @@ related_files = [
 loc = 141
 techniques = ["XML parsing", "gap categorization", "overlap detection", "priority analysis"]
 
-[selections.benchmark_inventory]
+[[selections]]
+filename = "benchmark_inventory.py"
 labels = [
     "purpose:test-poc",
     "quality:interesting",
@@ -206,7 +215,8 @@ techniques = ["time.time() benchmarking", "iteration analysis", "statistics calc
 # ARCHITECTURAL ANALYSIS & VERIFICATION
 ##############################################################################
 
-[selections.verify_architecture]
+[[selections]]
+filename = "verify_architecture.py"
 labels = [
     "purpose:test-poc",
     "quality:interesting",
@@ -230,7 +240,8 @@ related_files = []
 loc = 27
 techniques = ["dynamic imports", "source introspection", "constraint validation"]
 
-[selections.verify_architecture_v2]
+[[selections]]
+filename = "verify_architecture_v2.py"
 labels = [
     "purpose:test-poc",
     "quality:gem",
@@ -257,7 +268,8 @@ related_files = [
 loc = 61
 techniques = ["source introspection", "multi-assertion testing", "visual reporting"]
 
-[selections.comprehensive_dual_test]
+[[selections]]
+filename = "comprehensive_dual_test.py"
 labels = [
     "purpose:test-poc",
     "quality:gem",
@@ -285,7 +297,8 @@ related_files = [
 loc = 90
 techniques = ["registry testing", "cache introspection", "routing validation", "async testing"]
 
-[selections.robots_analysis]
+[[selections]]
+filename = "robots_analysis.py"
 labels = [
     "purpose:debug",
     "quality:gem",
@@ -314,7 +327,8 @@ techniques = ["exception simulation", "behavior analysis", "problem documentatio
 # PATTERN EXTRACTION & STRUCTURAL ANALYSIS
 ##############################################################################
 
-[selections.extract_code_patterns]
+[[selections]]
+filename = "extract_code_patterns.py"
 labels = [
     "purpose:analysis",
     "quality:interesting",
@@ -340,7 +354,8 @@ related_files = [
 loc = 41
 techniques = ["JSON loading", "data iteration", "preview generation"]
 
-[selections.section_analysis]
+[[selections]]
+filename = "section_analysis.py"
 labels = [
     "purpose:analysis",
     "quality:interesting",
@@ -366,7 +381,8 @@ related_files = [
 loc = 49
 techniques = ["hierarchical analysis", "selector grouping", "pattern counting"]
 
-[selections.compare_schemas]
+[[selections]]
+filename = "compare_schemas.py"
 labels = [
     "purpose:analysis",
     "quality:interesting",
@@ -395,7 +411,8 @@ techniques = ["MCP client usage", "schema introspection", "multi-server comparis
 # NOVEL EXPERIMENTS & PROPOSALS
 ##############################################################################
 
-[selections.delay_injection_proposal]
+[[selections]]
+filename = "delay_injection_proposal.py"
 labels = [
     "purpose:analysis",
     "quality:gem",
@@ -481,31 +498,3 @@ design_proposals = ["delay_injection_proposal.py"]
 "comprehensive_summary.py" = ["extract_code_patterns.py", "section_analysis.py"]
 "inventory_search_analysis.py" = ["tyro_inventory_analysis.py"]
 "verify_architecture.py" = ["verify_architecture_v2.py"]
-
-##############################################################################
-# RECOMMENDATIONS FOR FUTURE CLASSIFICATIONS
-##############################################################################
-
-[recommendations]
-high_value_indicators = [
-    "Comprehensive cross-cutting analysis",
-    "Actionable recommendations or insights",
-    "Novel testing/analysis techniques",
-    "Architectural proposals with before/after examples",
-    "Multi-source data aggregation"
-]
-
-auto_classification_hints = [
-    "*_analysis.py → purpose:analysis",
-    "verify_* → purpose:test-poc + topic:architecture",
-    "benchmark_* → purpose:test-poc + topic:performance",
-    "*_proposal.py → quality:gem + format:document",
-    "comprehensive_* → scope:comprehensive"
-]
-
-quality_gem_criteria = [
-    "Provides actionable insights beyond raw data",
-    "Demonstrates novel or sophisticated techniques",
-    "Well-documented with clear problem/solution",
-    "Could serve as template for similar analyses"
-]

@@ -467,3 +467,46 @@ Based on validated approach:
    - Design refinement workflow (LLM-assisted)
    - Consider how refined scribbles differ from selections
    - Determine refinement metadata needs
+
+## Recommendations for Future Classifications
+
+Based on python-librovore selection experience:
+
+### High-Value Indicators
+
+Look for scribbles that demonstrate:
+- Comprehensive cross-cutting analysis (not just single-purpose scripts)
+- Actionable recommendations or insights (beyond raw data presentation)
+- Novel testing/analysis techniques (creative problem-solving approaches)
+- Architectural proposals with before/after examples (design evolution documentation)
+- Multi-source data aggregation (synthesizing information from multiple sources)
+
+### LLM Classification Hints
+
+File naming patterns that suggest labels:
+- `*_analysis.py` → `purpose:analysis`
+- `verify_*` → `purpose:test-poc` + `topic:architecture`
+- `benchmark_*` → `purpose:test-poc` + `topic:performance`
+- `*_proposal.py` → `quality:gem` + `format:document`
+- `comprehensive_*` → `scope:comprehensive`
+- `debug_*` → `purpose:debug`
+- `test_*` → `purpose:test-poc`
+
+### Quality:Gem Criteria
+
+Scribbles likely to be gems when they:
+- Provide actionable insights beyond raw data
+- Demonstrate novel or sophisticated techniques
+- Are well-documented with clear problem/solution exposition
+- Could serve as template for similar analyses
+- Show thoughtful design evolution or architectural thinking
+- Include before/after comparisons or progression demonstrations
+
+### Quality Assessment Notes
+
+- `quality:gem` (8 of 14 selections, ~57%): Exceptional value, worth preserving and referencing
+- `quality:interesting` (6 of 14 selections, ~43%): Solid value, demonstrates useful patterns
+- `quality:routine`: Not selected in this batch, but would be straightforward implementations
+- `quality:noise`: Not selected in this batch; duplicates, superseded work, or minimal-value artifacts
+
+Note: Failed experiments can still be valuable if they demonstrate novel approaches, so don't automatically classify as noise.
