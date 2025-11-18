@@ -1,1 +1,1 @@
-../../ingests/python-dynadoc/scribbles/test_direct_forwardref_to_renderer.py
+../../ingests/python-dynadoc/test_direct_forwardref_to_renderer.py

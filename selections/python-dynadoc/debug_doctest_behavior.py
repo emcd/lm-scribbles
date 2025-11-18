@@ -1,1 +1,1 @@
-../../ingests/python-dynadoc/scribbles/debug_doctest_behavior.py
+../../ingests/python-dynadoc/debug_doctest_behavior.py

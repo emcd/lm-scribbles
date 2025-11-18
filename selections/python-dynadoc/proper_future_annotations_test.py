@@ -1,1 +1,1 @@
-../../ingests/python-dynadoc/scribbles/proper_future_annotations_test.py
+../../ingests/python-dynadoc/proper_future_annotations_test.py

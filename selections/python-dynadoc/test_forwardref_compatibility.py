@@ -1,1 +1,1 @@
-../../ingests/python-dynadoc/scribbles/test_forwardref_compatibility.py
+../../ingests/python-dynadoc/test_forwardref_compatibility.py

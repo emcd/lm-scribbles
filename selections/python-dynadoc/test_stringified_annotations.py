@@ -1,1 +1,1 @@
-../../ingests/python-dynadoc/scribbles/test_stringified_annotations.py
+../../ingests/python-dynadoc/test_stringified_annotations.py

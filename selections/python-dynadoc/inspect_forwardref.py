@@ -1,1 +1,1 @@
-../../ingests/python-dynadoc/scribbles/inspect_forwardref.py
+../../ingests/python-dynadoc/inspect_forwardref.py
