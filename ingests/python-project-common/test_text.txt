@@ -1,0 +1,2 @@
+This is a test file for reproducing the GPG pinentry issue.
+We'll try to sign this with GPG to trigger the pinentry prompt.

@@ -1,0 +1,203 @@
+[2025-07-20T21:17:00.085276] Event data: {
+  "session_id": "56bfe68a-3e40-46b5-9fa1-4bb11696b459",
+  "transcript_path": "/home/me/.config/claude/projects/-home-me-src-python-project-common/56bfe68a-3e40-46b5-9fa1-4bb11696b459.jsonl",
+  "cwd": "/home/me/src/python-project-common",
+  "hook_event_name": "PostToolUse",
+  "tool_name": "Edit",
+  "tool_input": {
+    "file_path": "/home/me/src/python-project-common/.auxiliary/scripts/claude/post-edit-linter",
+    "old_string": "def _acquire_event_data( ):\n    try: return json.load( sys.stdin )\n    except json.JSONDecodeError:\n        _reactor_failure( \"Invalid event data.\" )",
+    "new_string": "def _debug_log( message ):\n    ''' Log debug message to file in scribbles directory. '''\n    log_file = '.auxiliary/scribbles/post-edit-linter-debug.log'\n    os.makedirs( os.path.dirname( log_file ), exist_ok = True )\n    timestamp = datetime.now().isoformat()\n    with open( log_file, 'a' ) as f:\n        f.write( f\"[{timestamp}] {message}\\n\" )\n\n\ndef _acquire_event_data( ):\n    try: return json.load( sys.stdin )\n    except json.JSONDecodeError:\n        _reactor_failure( \"Invalid event data.\" )"
+  },
+  "tool_response": {
+    "filePath": "/home/me/src/python-project-common/.auxiliary/scripts/claude/post-edit-linter",
+    "oldString": "def _acquire_event_data( ):\n    try: return json.load( sys.stdin )\n    except json.JSONDecodeError:\n        _reactor_failure( \"Invalid event data.\" )",
+    "newString": "def _debug_log( message ):\n    ''' Log debug message to file in scribbles directory. '''\n    log_file = '.auxiliary/scribbles/post-edit-linter-debug.log'\n    os.makedirs( os.path.dirname( log_file ), exist_ok = True )\n    timestamp = datetime.now().isoformat()\n    with open( log_file, 'a' ) as f:\n        f.write( f\"[{timestamp}] {message}\\n\" )\n\n\ndef _acquire_event_data( ):\n    try: return json.load( sys.stdin )\n    except json.JSONDecodeError:\n        _reactor_failure( \"Invalid event data.\" )",
+    "originalFile": "#!/usr/bin/env python3\n# vim: set filetype=python fileencoding=utf-8:\n# -*- coding: utf-8 -*-\n\n''' Claude Code hook to run linters after file updates. '''\n\n\nimport json\nimport subprocess\nimport sys\nimport os\nfrom datetime import datetime\n\n\ndef main( ):\n    event = _acquire_event_data( )\n    _debug_log( f\"Event data: {json.dumps(event, indent=2)}\" )\n    \n    tool_response = event.get( 'tool_response', { } )\n    tool_success = tool_response.get( 'success', False )\n    _debug_log( f\"Tool success: {tool_success}\" )\n    \n    if not tool_success:\n        _debug_log( \"Tool failed, exiting early\" )\n        raise SystemExit( 0 ) # tool failed, no point running linters\n    \n    _debug_log( \"Running linters...\" )\n    try:\n        result = subprocess.run(\n            [ 'hatch', '--env', 'develop', 'run', 'linters' ],  # noqa: S607\n            capture_output = True, check = False, text = True, timeout = 60 )\n    except Exception as exc:\n        exc_class = type( exc )\n        _debug_log( f\"Linter exception: {exc_class.__qualname__}: {exc}\" )\n        _reactor_failure( f\"{exc_class.__qualname__}: {exc}\" )\n    \n    _debug_log( f\"Linter return code: {result.returncode}\" )\n    _debug_log( f\"Linter stdout: {repr(result.stdout)}\" )\n    _debug_log( f\"Linter stderr: {repr(result.stderr)}\" )\n    \n    # Use JSON output for better integration with Claude Code\n    if result.returncode != 0:\n        # Combine stdout and stderr since linting output may go to stdout.\n        combined_output = f\"{result.stdout}\\n\\n{result.stderr}\"\n        _debug_log( f\"Emitting block decision with output: {repr(combined_output)}\" )\n        _emit_decision_json( \"block\", combined_output )\n    else: \n        _debug_log( \"No linting errors, exiting with success\" )\n        raise SystemExit( 0 )\n\n\ndef _acquire_event_data( ):\n    try: return json.load( sys.stdin )\n    except json.JSONDecodeError:\n        _reactor_failure( \"Invalid event data.\" )\n\n\ndef _emit_decision_json( decision, reason ):\n    ''' Output JSON decision for Claude Code hook system. '''\n    response = { \"decision\": decision, \"reason\": reason }\n    print( json.dumps( response ) )\n    raise SystemExit( 2 )\n\n\ndef _error( message ):\n    print( message, file = sys.stderr )\n    raise SystemExit( 2 )\n\n\ndef _reactor_failure( message ):\n    print( \"Claude Code Hook Failure: {message}\", file = sys.stderr )\n    raise SystemExit( 1 )\n\n\nif __name__ == '__main__': main( )\n",
+    "structuredPatch": [
+      {
+        "oldStart": 49,
+        "oldLines": 6,
+        "newStart": 49,
+        "newLines": 15,
+        "lines": [
+          "         raise SystemExit( 0 )",
+          " ",
+          " ",
+          "+def _debug_log( message ):",
+          "+    ''' Log debug message to file in scribbles directory. '''",
+          "+    log_file = '.auxiliary/scribbles/post-edit-linter-debug.log'",
+          "+    os.makedirs( os.path.dirname( log_file ), exist_ok = True )",
+          "+    timestamp = datetime.now().isoformat()",
+          "+    with open( log_file, 'a' ) as f:",
+          "+        f.write( f\"[{timestamp}] {message}\\n\" )",
+          "+",
+          "+",
+          " def _acquire_event_data( ):",
+          "     try: return json.load( sys.stdin )",
+          "     except json.JSONDecodeError:"
+        ]
+      }
+    ],
+    "userModified": false,
+    "replaceAll": false
+  }
+}
+[2025-07-20T21:17:00.085425] Tool success: False
+[2025-07-20T21:17:00.085459] Tool failed, exiting early
+[2025-07-20T21:17:06.877981] Event data: {
+  "session_id": "56bfe68a-3e40-46b5-9fa1-4bb11696b459",
+  "transcript_path": "/home/me/.config/claude/projects/-home-me-src-python-project-common/56bfe68a-3e40-46b5-9fa1-4bb11696b459.jsonl",
+  "cwd": "/home/me/src/python-project-common",
+  "hook_event_name": "PostToolUse",
+  "tool_name": "Edit",
+  "tool_input": {
+    "file_path": "/home/me/src/python-project-common/sources/emcdproj/cli.py",
+    "old_string": "import os, sys  # multiple unused imports for debugging",
+    "new_string": "import os, sys, json  # adding json import for more debug data"
+  },
+  "tool_response": {
+    "filePath": "/home/me/src/python-project-common/sources/emcdproj/cli.py",
+    "oldString": "import os, sys  # multiple unused imports for debugging",
+    "newString": "import os, sys, json  # adding json import for more debug data",
+    "originalFile": "# vim: set filetype=python fileencoding=utf-8:\n# -*- coding: utf-8 -*-\n\n#============================================================================#\n#                                                                            #\n#  Licensed under the Apache License, Version 2.0 (the \"License\");           #\n#  you may not use this file except in compliance with the License.          #\n#  You may obtain a copy of the License at                                   #\n#                                                                            #\n#      http://www.apache.org/licenses/LICENSE-2.0                            #\n#                                                                            #\n#  Unless required by applicable law or agreed to in writing, software       #\n#  distributed under the License is distributed on an \"AS IS\" BASIS,         #\n#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  #\n#  See the License for the specific language governing permissions and       #\n#  limitations under the License.                                            #\n#                                                                            #\n#============================================================================#\n\n\n''' Command-line interface. '''\n\n\nimport os, sys  # multiple unused imports for debugging\nfrom . import __\nfrom . import interfaces as _interfaces\nfrom . import template as _template\nfrom . import website as _website\n\n\nclass VersionCommand(\n    _interfaces.CliCommand,\n    decorators = ( __.standard_tyro_class, ),\n):\n    ''' Prints version information. '''\n\n    async def __call__(\n        self, auxdata: __.Globals, display: _interfaces.ConsoleDisplay\n    ) -> None:\n        from . import __version__\n        print( f\"{__package__} {__version__}\" )\n        raise SystemExit( 0 )\n\n\nclass Cli(\n    __.immut.DataclassObject,\n    decorators = ( __.simple_tyro_class, ),\n):\n    ''' Various utilities for projects by Github user '@emcd'. '''\n\n    # configfile: __.typx.Optional[ str ] = None\n    display: _interfaces.ConsoleDisplay\n    command: __.typx.Union[\n        __.typx.Annotated[\n            _template.CommandDispatcher,\n            __.tyro.conf.subcommand( 'template', prefix_name = False ),\n        ],\n        __.typx.Annotated[\n            _website.CommandDispatcher,\n            __.tyro.conf.subcommand( 'website', prefix_name = False ),\n        ],\n        __.typx.Annotated[\n            VersionCommand,\n            __.tyro.conf.subcommand( 'version', prefix_name = False ),\n        ],\n    ]\n\n    async def __call__( self ):\n        ''' Invokes command after library preparation. '''\n        nomargs = self.prepare_invocation_args( )\n        async with __.ctxl.AsyncExitStack( ) as exits:\n            auxdata = await _prepare( exits = exits, **nomargs )\n            ictr( 0 )( self.command )\n            await self.command( auxdata = auxdata, display = self.display )\n\n    def prepare_invocation_args(\n        self,\n    ) -> __.cabc.Mapping[ str, __.typx.Any ]:\n        ''' Prepares arguments for initial configuration. '''\n        args: dict[ str, __.typx.Any ] = dict(\n            environment = True,\n        )\n        # if self.configfile: args[ 'configfile' ] = self.configfile\n        return args\n\n\ndef execute( ) -> None:\n    ''' Entrypoint for CLI execution. '''\n    from asyncio import run\n    config = (\n        __.tyro.conf.HelptextFromCommentsOff,\n    )\n    try: run( __.tyro.cli( Cli, config = config )( ) )\n    except SystemExit: raise\n    except BaseException as exc:\n        print( exc, file = __.sys.stderr )\n        raise SystemExit( 1 ) from None\n\n\nasync def _prepare(\n    environment: bool,\n    exits: __.ctxl.AsyncExitStack,\n) -> __.Globals:\n    ''' Configures logging based on verbosity. '''\n    import ictruck\n    # TODO: Finetune Icecream truck installation from CLI arguments.\n    ictruck.install( trace_levels = 9 )\n    return await __.appcore.prepare(\n        environment = environment, exits = exits )\n",
+    "structuredPatch": [
+      {
+        "oldStart": 21,
+        "oldLines": 7,
+        "newStart": 21,
+        "newLines": 7,
+        "lines": [
+          " ''' Command-line interface. '''",
+          " ",
+          " ",
+          "-import os, sys  # multiple unused imports for debugging",
+          "+import os, sys, json  # adding json import for more debug data",
+          " from . import __",
+          " from . import interfaces as _interfaces",
+          " from . import template as _template"
+        ]
+      }
+    ],
+    "userModified": false,
+    "replaceAll": false
+  }
+}
+[2025-07-20T21:17:06.878061] Tool success: False
+[2025-07-20T21:17:06.878092] Tool failed, exiting early
+[2025-07-20T21:17:29.835456] Event data: {
+  "session_id": "56bfe68a-3e40-46b5-9fa1-4bb11696b459",
+  "transcript_path": "/home/me/.config/claude/projects/-home-me-src-python-project-common/56bfe68a-3e40-46b5-9fa1-4bb11696b459.jsonl",
+  "cwd": "/home/me/src/python-project-common",
+  "hook_event_name": "PostToolUse",
+  "tool_name": "Write",
+  "tool_input": {
+    "file_path": "/home/me/src/python-project-common/.auxiliary/scribbles/hook-test-simple.py",
+    "content": "import unused_module\nprint(\"test\")"
+  },
+  "tool_response": {
+    "type": "create",
+    "filePath": "/home/me/src/python-project-common/.auxiliary/scribbles/hook-test-simple.py",
+    "content": "import unused_module\nprint(\"test\")",
+    "structuredPatch": []
+  }
+}
+[2025-07-20T21:17:29.835522] Tool success: False
+[2025-07-20T21:17:29.835553] Tool failed, exiting early
+[2025-07-20T21:17:41.656121] Event data: {
+  "session_id": "56bfe68a-3e40-46b5-9fa1-4bb11696b459",
+  "transcript_path": "/home/me/.config/claude/projects/-home-me-src-python-project-common/56bfe68a-3e40-46b5-9fa1-4bb11696b459.jsonl",
+  "cwd": "/home/me/src/python-project-common",
+  "hook_event_name": "PostToolUse",
+  "tool_name": "Edit",
+  "tool_input": {
+    "file_path": "/home/me/src/python-project-common/.auxiliary/scripts/claude/post-edit-linter",
+    "old_string": "    tool_response = event.get( 'tool_response', { } )\n    tool_success = tool_response.get( 'success', False )\n    _debug_log( f\"Tool success: {tool_success}\" )\n    \n    if not tool_success:\n        _debug_log( \"Tool failed, exiting early\" )\n        raise SystemExit( 0 ) # tool failed, no point running linters",
+    "new_string": "    tool_response = event.get( 'tool_response', { } )\n    # Check if tool response exists and is valid (no explicit success field in Claude Code)\n    tool_success = bool( tool_response )\n    _debug_log( f\"Tool response exists: {tool_success}\" )\n    _debug_log( f\"Tool response keys: {list(tool_response.keys()) if tool_response else 'None'}\" )\n    \n    if not tool_success:\n        _debug_log( \"No tool response, exiting early\" )\n        raise SystemExit( 0 ) # tool failed, no point running linters"
+  },
+  "tool_response": {
+    "filePath": "/home/me/src/python-project-common/.auxiliary/scripts/claude/post-edit-linter",
+    "oldString": "    tool_response = event.get( 'tool_response', { } )\n    tool_success = tool_response.get( 'success', False )\n    _debug_log( f\"Tool success: {tool_success}\" )\n    \n    if not tool_success:\n        _debug_log( \"Tool failed, exiting early\" )\n        raise SystemExit( 0 ) # tool failed, no point running linters",
+    "newString": "    tool_response = event.get( 'tool_response', { } )\n    # Check if tool response exists and is valid (no explicit success field in Claude Code)\n    tool_success = bool( tool_response )\n    _debug_log( f\"Tool response exists: {tool_success}\" )\n    _debug_log( f\"Tool response keys: {list(tool_response.keys()) if tool_response else 'None'}\" )\n    \n    if not tool_success:\n        _debug_log( \"No tool response, exiting early\" )\n        raise SystemExit( 0 ) # tool failed, no point running linters",
+    "originalFile": "#!/usr/bin/env python3\n# vim: set filetype=python fileencoding=utf-8:\n# -*- coding: utf-8 -*-\n\n''' Claude Code hook to run linters after file updates. '''\n\n\nimport json\nimport subprocess\nimport sys\nimport os\nfrom datetime import datetime\n\n\ndef main( ):\n    event = _acquire_event_data( )\n    _debug_log( f\"Event data: {json.dumps(event, indent=2)}\" )\n    \n    tool_response = event.get( 'tool_response', { } )\n    tool_success = tool_response.get( 'success', False )\n    _debug_log( f\"Tool success: {tool_success}\" )\n    \n    if not tool_success:\n        _debug_log( \"Tool failed, exiting early\" )\n        raise SystemExit( 0 ) # tool failed, no point running linters\n    \n    _debug_log( \"Running linters...\" )\n    try:\n        result = subprocess.run(\n            [ 'hatch', '--env', 'develop', 'run', 'linters' ],  # noqa: S607\n            capture_output = True, check = False, text = True, timeout = 60 )\n    except Exception as exc:\n        exc_class = type( exc )\n        _debug_log( f\"Linter exception: {exc_class.__qualname__}: {exc}\" )\n        _reactor_failure( f\"{exc_class.__qualname__}: {exc}\" )\n    \n    _debug_log( f\"Linter return code: {result.returncode}\" )\n    _debug_log( f\"Linter stdout: {repr(result.stdout)}\" )\n    _debug_log( f\"Linter stderr: {repr(result.stderr)}\" )\n    \n    # Use JSON output for better integration with Claude Code\n    if result.returncode != 0:\n        # Combine stdout and stderr since linting output may go to stdout.\n        combined_output = f\"{result.stdout}\\n\\n{result.stderr}\"\n        _debug_log( f\"Emitting block decision with output: {repr(combined_output)}\" )\n        _emit_decision_json( \"block\", combined_output )\n    else: \n        _debug_log( \"No linting errors, exiting with success\" )\n        raise SystemExit( 0 )\n\n\ndef _debug_log( message ):\n    ''' Log debug message to file in scribbles directory. '''\n    log_file = '.auxiliary/scribbles/post-edit-linter-debug.log'\n    os.makedirs( os.path.dirname( log_file ), exist_ok = True )\n    timestamp = datetime.now().isoformat()\n    with open( log_file, 'a' ) as f:\n        f.write( f\"[{timestamp}] {message}\\n\" )\n\n\ndef _acquire_event_data( ):\n    try: return json.load( sys.stdin )\n    except json.JSONDecodeError:\n        _reactor_failure( \"Invalid event data.\" )\n\n\ndef _emit_decision_json( decision, reason ):\n    ''' Output JSON decision for Claude Code hook system. '''\n    response = { \"decision\": decision, \"reason\": reason }\n    print( json.dumps( response ) )\n    raise SystemExit( 2 )\n\n\ndef _error( message ):\n    print( message, file = sys.stderr )\n    raise SystemExit( 2 )\n\n\ndef _reactor_failure( message ):\n    print( \"Claude Code Hook Failure: {message}\", file = sys.stderr )\n    raise SystemExit( 1 )\n\n\nif __name__ == '__main__': main( )\n",
+    "structuredPatch": [
+      {
+        "oldStart": 17,
+        "oldLines": 11,
+        "newStart": 17,
+        "newLines": 13,
+        "lines": [
+          "     _debug_log( f\"Event data: {json.dumps(event, indent=2)}\" )",
+          "     ",
+          "     tool_response = event.get( 'tool_response', { } )",
+          "-    tool_success = tool_response.get( 'success', False )",
+          "-    _debug_log( f\"Tool success: {tool_success}\" )",
+          "+    # Check if tool response exists and is valid (no explicit success field in Claude Code)",
+          "+    tool_success = bool( tool_response )",
+          "+    _debug_log( f\"Tool response exists: {tool_success}\" )",
+          "+    _debug_log( f\"Tool response keys: {list(tool_response.keys()) if tool_response else 'None'}\" )",
+          "     ",
+          "     if not tool_success:",
+          "-        _debug_log( \"Tool failed, exiting early\" )",
+          "+        _debug_log( \"No tool response, exiting early\" )",
+          "         raise SystemExit( 0 ) # tool failed, no point running linters",
+          "     ",
+          "     _debug_log( \"Running linters...\" )"
+        ]
+      }
+    ],
+    "userModified": false,
+    "replaceAll": false
+  }
+}
+[2025-07-20T21:17:41.656254] Tool response exists: True
+[2025-07-20T21:17:41.656312] Tool response keys: ['filePath', 'oldString', 'newString', 'originalFile', 'structuredPatch', 'userModified', 'replaceAll']
+[2025-07-20T21:17:41.656352] Running linters...
+[2025-07-20T21:17:41.849279] Linter return code: 1
+[2025-07-20T21:17:41.849361] Linter stdout: 'cmd [1] | ruff check --quiet sources documentation tests\nsources/emcdproj/cli.py:24:1: E401 [*] Multiple imports on one line\n   |\n24 | import os, sys, json  # adding json import for more debug data\n   | ^^^^^^^^^^^^^^^^^^^^ E401\n25 | from . import __\n26 | from . import interfaces as _interfaces\n   |\n   = help: Split imports\n\nsources/emcdproj/cli.py:24:8: F401 [*] `os` imported but unused\n   |\n24 | import os, sys, json  # adding json import for more debug data\n   |        ^^ F401\n25 | from . import __\n26 | from . import interfaces as _interfaces\n   |\n   = help: Remove unused import\n\nsources/emcdproj/cli.py:24:12: F401 [*] `sys` imported but unused\n   |\n24 | import os, sys, json  # adding json import for more debug data\n   |            ^^^ F401\n25 | from . import __\n26 | from . import interfaces as _interfaces\n   |\n   = help: Remove unused import\n\nsources/emcdproj/cli.py:24:17: F401 [*] `json` imported but unused\n   |\n24 | import os, sys, json  # adding json import for more debug data\n   |                 ^^^^ F401\n25 | from . import __\n26 | from . import interfaces as _interfaces\n   |\n   = help: Remove unused import\n\n'
+[2025-07-20T21:17:41.849393] Linter stderr: ''
+[2025-07-20T21:17:41.849427] Emitting block decision with output: 'cmd [1] | ruff check --quiet sources documentation tests\nsources/emcdproj/cli.py:24:1: E401 [*] Multiple imports on one line\n   |\n24 | import os, sys, json  # adding json import for more debug data\n   | ^^^^^^^^^^^^^^^^^^^^ E401\n25 | from . import __\n26 | from . import interfaces as _interfaces\n   |\n   = help: Split imports\n\nsources/emcdproj/cli.py:24:8: F401 [*] `os` imported but unused\n   |\n24 | import os, sys, json  # adding json import for more debug data\n   |        ^^ F401\n25 | from . import __\n26 | from . import interfaces as _interfaces\n   |\n   = help: Remove unused import\n\nsources/emcdproj/cli.py:24:12: F401 [*] `sys` imported but unused\n   |\n24 | import os, sys, json  # adding json import for more debug data\n   |            ^^^ F401\n25 | from . import __\n26 | from . import interfaces as _interfaces\n   |\n   = help: Remove unused import\n\nsources/emcdproj/cli.py:24:17: F401 [*] `json` imported but unused\n   |\n24 | import os, sys, json  # adding json import for more debug data\n   |                 ^^^^ F401\n25 | from . import __\n26 | from . import interfaces as _interfaces\n   |\n   = help: Remove unused import\n\n\n\n'
+[2025-07-20T21:17:54.593216] Event data: {
+  "session_id": "56bfe68a-3e40-46b5-9fa1-4bb11696b459",
+  "transcript_path": "/home/me/.config/claude/projects/-home-me-src-python-project-common/56bfe68a-3e40-46b5-9fa1-4bb11696b459.jsonl",
+  "cwd": "/home/me/src/python-project-common",
+  "hook_event_name": "PostToolUse",
+  "tool_name": "Edit",
+  "tool_input": {
+    "file_path": "/home/me/src/python-project-common/sources/emcdproj/cli.py",
+    "old_string": "import os, sys, json  # adding json import for more debug data\nfrom . import __",
+    "new_string": "from . import __"
+  },
+  "tool_response": {
+    "filePath": "/home/me/src/python-project-common/sources/emcdproj/cli.py",
+    "oldString": "import os, sys, json  # adding json import for more debug data\nfrom . import __",
+    "newString": "from . import __",
+    "originalFile": "# vim: set filetype=python fileencoding=utf-8:\n# -*- coding: utf-8 -*-\n\n#============================================================================#\n#                                                                            #\n#  Licensed under the Apache License, Version 2.0 (the \"License\");           #\n#  you may not use this file except in compliance with the License.          #\n#  You may obtain a copy of the License at                                   #\n#                                                                            #\n#      http://www.apache.org/licenses/LICENSE-2.0                            #\n#                                                                            #\n#  Unless required by applicable law or agreed to in writing, software       #\n#  distributed under the License is distributed on an \"AS IS\" BASIS,         #\n#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  #\n#  See the License for the specific language governing permissions and       #\n#  limitations under the License.                                            #\n#                                                                            #\n#============================================================================#\n\n\n''' Command-line interface. '''\n\n\nimport os, sys, json  # adding json import for more debug data\nfrom . import __\nfrom . import interfaces as _interfaces\nfrom . import template as _template\nfrom . import website as _website\n\n\nclass VersionCommand(\n    _interfaces.CliCommand,\n    decorators = ( __.standard_tyro_class, ),\n):\n    ''' Prints version information. '''\n\n    async def __call__(\n        self, auxdata: __.Globals, display: _interfaces.ConsoleDisplay\n    ) -> None:\n        from . import __version__\n        print( f\"{__package__} {__version__}\" )\n        raise SystemExit( 0 )\n\n\nclass Cli(\n    __.immut.DataclassObject,\n    decorators = ( __.simple_tyro_class, ),\n):\n    ''' Various utilities for projects by Github user '@emcd'. '''\n\n    # configfile: __.typx.Optional[ str ] = None\n    display: _interfaces.ConsoleDisplay\n    command: __.typx.Union[\n        __.typx.Annotated[\n            _template.CommandDispatcher,\n            __.tyro.conf.subcommand( 'template', prefix_name = False ),\n        ],\n        __.typx.Annotated[\n            _website.CommandDispatcher,\n            __.tyro.conf.subcommand( 'website', prefix_name = False ),\n        ],\n        __.typx.Annotated[\n            VersionCommand,\n            __.tyro.conf.subcommand( 'version', prefix_name = False ),\n        ],\n    ]\n\n    async def __call__( self ):\n        ''' Invokes command after library preparation. '''\n        nomargs = self.prepare_invocation_args( )\n        async with __.ctxl.AsyncExitStack( ) as exits:\n            auxdata = await _prepare( exits = exits, **nomargs )\n            ictr( 0 )( self.command )\n            await self.command( auxdata = auxdata, display = self.display )\n\n    def prepare_invocation_args(\n        self,\n    ) -> __.cabc.Mapping[ str, __.typx.Any ]:\n        ''' Prepares arguments for initial configuration. '''\n        args: dict[ str, __.typx.Any ] = dict(\n            environment = True,\n        )\n        # if self.configfile: args[ 'configfile' ] = self.configfile\n        return args\n\n\ndef execute( ) -> None:\n    ''' Entrypoint for CLI execution. '''\n    from asyncio import run\n    config = (\n        __.tyro.conf.HelptextFromCommentsOff,\n    )\n    try: run( __.tyro.cli( Cli, config = config )( ) )\n    except SystemExit: raise\n    except BaseException as exc:\n        print( exc, file = __.sys.stderr )\n        raise SystemExit( 1 ) from None\n\n\nasync def _prepare(\n    environment: bool,\n    exits: __.ctxl.AsyncExitStack,\n) -> __.Globals:\n    ''' Configures logging based on verbosity. '''\n    import ictruck\n    # TODO: Finetune Icecream truck installation from CLI arguments.\n    ictruck.install( trace_levels = 9 )\n    return await __.appcore.prepare(\n        environment = environment, exits = exits )\n",
+    "structuredPatch": [
+      {
+        "oldStart": 21,
+        "oldLines": 7,
+        "newStart": 21,
+        "newLines": 6,
+        "lines": [
+          " ''' Command-line interface. '''",
+          " ",
+          " ",
+          "-import os, sys, json  # adding json import for more debug data",
+          " from . import __",
+          " from . import interfaces as _interfaces",
+          " from . import template as _template"
+        ]
+      }
+    ],
+    "userModified": false,
+    "replaceAll": false
+  }
+}
+[2025-07-20T21:17:54.593296] Tool response exists: True
+[2025-07-20T21:17:54.593331] Tool response keys: ['filePath', 'oldString', 'newString', 'originalFile', 'structuredPatch', 'userModified', 'replaceAll']
+[2025-07-20T21:17:54.593359] Running linters...
+[2025-07-20T21:17:57.763186] Linter return code: 0
+[2025-07-20T21:17:57.763264] Linter stdout: 'cmd [1] | ruff check --quiet sources documentation tests\ncmd [2] | pyright sources\n0 errors, 0 warnings, 0 informations \n'
+[2025-07-20T21:17:57.763296] Linter stderr: ''
+[2025-07-20T21:17:57.763323] No linting errors, exiting with success

@@ -1,0 +1,29 @@
+[context]
+name = 'test-command'
+description = 'Test command with explicit tool specifications'
+argument-hint = 'test-arg'
+allowed-tools = [
+    # Shell commands - exact match
+    { tool = 'shell', arguments = 'git status' },
+
+    # Shell commands - with extra arguments allowed
+    { tool = 'shell', arguments = 'git pull', allow-extra-arguments = true },
+    { tool = 'shell', arguments = 'git checkout', allow-extra-arguments = true },
+    { tool = 'shell', arguments = 'hatch version', allow-extra-arguments = true },
+
+    # Built-in tools (semantic names)
+    'read',
+    'edit',
+    'write',
+    'list-directory',
+    'glob',
+
+    # MCP server tools
+    { server = 'librovore', tool = 'query-inventory' },
+    { server = 'librovore', tool = 'query-content' },
+]
+color = 'green'
+
+[[coders]]
+name = 'claude'
+model = 'sonnet-4.5'
