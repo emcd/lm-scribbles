@@ -1,16 +1,56 @@
+# Selection Index for agents-common Scribbles
+#
+# This file catalogs selected scribbles from the agents-common project
+# that demonstrate valuable configuration documentation and testing patterns.
+#
+# Format: Table array of selections with:
+# - filename: Name of the selected file
+# - labels: Categorization tags (purpose, quality, tech, scope)
+# - description: What the script does
+# - selection_rationale: Why it was selected
+# - related_files: Connected artifacts (data, output, source)
+# - loc: Lines of code
+# - techniques: Key techniques demonstrated
+
 [metadata]
 project = "agents-common"
 source_directory = "ingests/agents-common"
 selections_created = "2025-11-18T22:21:00Z"
-total_files_reviewed = 12
-files_selected = 2
-selection_rate = 0.167
+total_ingested_files = 12
+total_selected = 2
+selection_rate = "16.7%"  # 2/12
+selector = "Claude Code (Sonnet 4.5)"
 
-[selections.codex-config]
-labels = ["format:document", "quality:gem", "purpose:reference", "scope:comprehensive", "tech:configuration"]
+# Selection criteria used:
+# - Comprehensive reference documentation that serves as design patterns
+# - Test scripts that demonstrate debugging techniques or validation patterns
+# - Configuration examples showing complex system design
+
+[metadata.label_distribution]
+"purpose:reference" = 1
+"purpose:test-poc" = 1
+"quality:gem" = 1
+"quality:interesting" = 1
+"scope:comprehensive" = 1
+"scope:minimal" = 1
+
+##############################################################################
+# REFERENCE DOCUMENTATION
+##############################################################################
+
+[[selections]]
+filename = "codex-config.md"
+labels = [
+    "purpose:reference",
+    "quality:gem",
+    "topic:configuration",
+    "tech:documentation",
+    "scope:comprehensive",
+    "format:document"
+]
 description = "Comprehensive configuration documentation for Codex CLI tool covering all config options, MCP servers, profiles, and model providers"
 selection_rationale = """
-This is an exceptional reference document that demonstrates:
+Exceptional reference document that demonstrates:
 - Comprehensive coverage of a complex configuration system
 - Clear examples for every configuration option
 - Multiple configuration mechanisms (CLI flags, config file, profiles)
@@ -21,12 +61,36 @@ This is an exceptional reference document that demonstrates:
 The document serves as both user documentation and a design pattern reference for
 configuration systems. Shows thoughtful design with multiple levels of override
 (CLI > profile > config file > defaults) and extensive customization options.
+
+Value: Model for documenting complex configuration systems.
+Shows how to provide examples for every option while maintaining clarity.
+Demonstrates progressive disclosure with basic to advanced sections.
 """
 related_files = []
 loc = 827
+techniques = [
+    "hierarchical documentation",
+    "example-driven explanation",
+    "progressive complexity",
+    "cross-referencing",
+    "multi-mechanism configuration"
+]
 
-[selections.test_generation]
-labels = ["format:script", "quality:interesting", "purpose:test-poc", "scope:minimal", "tech:testing", "lang:python"]
+##############################################################################
+# TEST & POC SCRIPTS
+##############################################################################
+
+[[selections]]
+filename = "test_generation.py"
+labels = [
+    "purpose:test-poc",
+    "quality:interesting",
+    "topic:content-generation",
+    "tech:testing",
+    "lang:python",
+    "scope:minimal",
+    "format:script"
+]
 description = "Test script for agentsmgr content generation system, validates template generation to temporary directory"
 selection_rationale = """
 Demonstrates debugging approach for testing the agentsmgr content generation pipeline:
@@ -38,24 +102,95 @@ Demonstrates debugging approach for testing the agentsmgr content generation pip
 
 Shows practical testing pattern for file generation systems and configuration-driven
 workflows. Useful for understanding how to debug template/generation systems.
+
+Value: Template for testing file generation systems.
+Shows how to validate generation output using external tools (tree).
+Demonstrates configuration-driven testing approach.
 """
-related_files = ["data/agentsmgr/profiles/answers-default.yaml"]
+related_files = [
+    "data/agentsmgr/profiles/answers-default.yaml"
+]
 loc = 36
+techniques = [
+    "configuration loading",
+    "temporary directory testing",
+    "external tool validation",
+    "error handling with traceback"
+]
 
-[summary]
-selection_insights = """
-The agents-common project contains configuration management and testing code.
-Selected items represent:
-1. High-quality reference documentation (codex-config.md)
-2. Practical testing patterns for generation systems (test_generation.py)
+##############################################################################
+# SUMMARY STATISTICS
+##############################################################################
 
-Other files in the project include debug scripts and test POCs that were not
-selected due to limited context or routine nature.
-"""
+[statistics]
+total_selected = 2
+total_ingested = 12
+selection_rate = 16.7
 
-recommendations_for_future = """
+[statistics.by_purpose]
+reference = 1
+"test-poc" = 1
+
+[statistics.by_quality]
+gem = 1
+interesting = 1
+
+[statistics.by_scope]
+comprehensive = 1
+minimal = 1
+
+[statistics.by_format]
+document = 1
+script = 1
+
+[statistics.average_loc]
+# Lines of code statistics
+mean = 432
+median = 432
+min = 36
+max = 827
+
+##############################################################################
+# SELECTION INSIGHTS
+##############################################################################
+
+[insights]
+dominant_pattern = "Configuration management and testing code"
+collection_focus = "Reference documentation and practical testing patterns"
+surprising_find = "Exceptionally comprehensive configuration documentation (827 lines)"
+
+[insights.not_selected]
+# Other files in ingests/agents-common include:
+# - debug scripts (debug2.py, debug3.py)
+# - test POCs without sufficient context (test_frigid.py, test_statusline_branch.py)
+# - shell scripts for testing (test-statusline-mock.sh)
+# - HTML and text files (qwen-shell-tool.html, qwen-shell-restrictions.txt)
+# - TOML and markdown for test commands (test-command.toml, test-command.md)
+#
+# These were not selected due to:
+# - Limited context or routine nature
+# - Superseded by more comprehensive approaches
+# - Insufficient standalone value
+
+##############################################################################
+# RECOMMENDATIONS FOR FUTURE CLASSIFICATIONS
+##############################################################################
+
+[recommendations]
+high_value_indicators = """
 Look for:
 - Comprehensive documentation files that serve as both reference and design patterns
 - Test scripts that demonstrate debugging techniques or validation patterns
 - Configuration examples that show complex system design
+- Documents with clear hierarchy and extensive cross-references
+- Testing patterns for generation/template systems
+"""
+
+quality_markers = """
+High-quality reference documentation shows:
+- Progressive complexity from basic to advanced
+- Examples for every configuration option
+- Multiple usage patterns and mechanisms
+- Clear trade-offs and recommendations
+- Integration examples (Azure, Ollama, etc.)
 """
