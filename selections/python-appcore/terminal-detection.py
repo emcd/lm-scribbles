@@ -1,0 +1,1 @@
+../../ingests/python-appcore/terminal-detection.py

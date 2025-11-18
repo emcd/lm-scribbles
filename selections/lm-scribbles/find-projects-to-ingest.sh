@@ -1,0 +1,1 @@
+../../ingests/lm-scribbles/find-projects-to-ingest.sh

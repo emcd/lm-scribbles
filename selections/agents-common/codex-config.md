@@ -1,0 +1,1 @@
+../../ingests/agents-common/codex-config.md

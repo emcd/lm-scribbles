@@ -1,0 +1,1 @@
+../../ingests/lm-scribbles/ingest-all.sh

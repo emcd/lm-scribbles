@@ -1,0 +1,207 @@
+# Selection Index for lm-scribbles Scribbles
+#
+# This file catalogs selected scribbles from the lm-scribbles project
+# that demonstrate meta-automation scripts for the scribbles system itself.
+#
+# Format: Table array of selections with:
+# - filename: Name of the selected file
+# - labels: Categorization tags (purpose, quality, tech, scope)
+# - description: What the script does
+# - selection_rationale: Why it was selected
+# - related_files: Connected artifacts (data, output, source)
+# - loc: Lines of code
+# - techniques: Key techniques demonstrated
+
+[metadata]
+project = "lm-scribbles"
+source_directory = "ingests/lm-scribbles"
+selections_created = "2025-11-18T22:21:00Z"
+total_ingested_files = 2
+total_selected = 2
+selection_rate = "100%"  # 2/2
+selector = "Claude Code (Sonnet 4.5)"
+
+# Selection criteria used:
+# - Meta-scripts that automate or analyze the development process itself
+# - Discovery/inventory scripts that understand project structure
+# - Batch processing automation following discovery phase
+# - Clean shell scripts with good error handling and output formatting
+
+[metadata.label_distribution]
+"purpose:automation" = 1
+"purpose:analysis" = 1
+"quality:interesting" = 2
+"scope:minimal" = 2
+
+##############################################################################
+# PROJECT AUTOMATION SCRIPTS
+##############################################################################
+
+[[selections]]
+filename = "ingest-all.sh"
+labels = [
+    "purpose:automation",
+    "quality:interesting",
+    "topic:batch-processing",
+    "tech:shell",
+    "lang:bash",
+    "scope:minimal",
+    "format:script"
+]
+description = "Batch ingestion script that automates ingesting scribbles from multiple projects using a predefined list"
+selection_rationale = """
+Demonstrates practical automation pattern for batch operations:
+- Iterates over predefined list of projects
+- Checks for scribbles directory existence before processing
+- Calls lmscribbles ingest command for each project
+- Clean output with section separators for readability
+- Error handling for missing directories
+
+Shows the evolution from discovery (find-projects-to-ingest.sh) to automation.
+Useful pattern for batch processing workflows and project management automation.
+The script is self-documenting with clear structure and explicit error messages.
+
+Value: Template for batch automation workflows.
+Shows how to progress from discovery to execution.
+Demonstrates defensive programming with existence checks.
+"""
+related_files = [
+    "find-projects-to-ingest.sh"
+]
+loc = 36
+techniques = [
+    "array iteration",
+    "directory existence checking",
+    "output formatting with separators",
+    "error message generation"
+]
+
+##############################################################################
+# PROJECT DISCOVERY SCRIPTS
+##############################################################################
+
+[[selections]]
+filename = "find-projects-to-ingest.sh"
+labels = [
+    "purpose:analysis",
+    "quality:interesting",
+    "topic:project-discovery",
+    "tech:shell",
+    "lang:bash",
+    "scope:minimal",
+    "format:script"
+]
+description = "Discovery script that scans for projects with scribbles, counts files, and identifies which need ingestion"
+selection_rationale = """
+Demonstrates valuable discovery/inventory pattern:
+- Scans base directory for all projects
+- Checks for scribbles subdirectories (.auxiliary/scribbles)
+- Counts files (excluding .gitignore) for meaningful inventory
+- Identifies already-ingested vs needs-ingestion status
+- Clean tabular output with status indicators
+
+This is the reconnaissance phase that informs the automation script (ingest-all.sh).
+Shows good systems thinking: understand what exists before automating.
+Useful pattern for project auditing and inventory management.
+
+Value: Model for discovery-before-automation workflow.
+Shows how to gather intelligence before taking action.
+Demonstrates status tracking (already processed vs needs work).
+"""
+related_files = [
+    "ingest-all.sh"
+]
+loc = 38
+techniques = [
+    "directory scanning",
+    "file counting with exclusions",
+    "status detection",
+    "tabular output formatting"
+]
+
+##############################################################################
+# SUMMARY STATISTICS
+##############################################################################
+
+[statistics]
+total_selected = 2
+total_ingested = 2
+selection_rate = 100.0
+
+[statistics.by_purpose]
+automation = 1
+analysis = 1
+
+[statistics.by_quality]
+interesting = 2
+
+[statistics.by_scope]
+minimal = 2
+
+[statistics.by_tech]
+shell = 2
+
+[statistics.by_lang]
+bash = 2
+
+[statistics.average_loc]
+# Lines of code statistics
+mean = 37
+median = 37
+min = 36
+max = 38
+
+##############################################################################
+# SELECTION INSIGHTS
+##############################################################################
+
+[insights]
+dominant_pattern = "Meta-automation: scripts that manage the scribbles system itself"
+collection_focus = "Discovery-then-automate workflow for project management"
+unique_characteristic = "100% selection rate - both files demonstrate valuable patterns"
+workflow_relationship = "Scripts form a complete workflow: discover → automate"
+
+[insights.workflow_progression]
+discovery_phase = "find-projects-to-ingest.sh identifies projects that need processing"
+automation_phase = "ingest-all.sh automates the batch processing based on discovery"
+
+[insights.key_patterns]
+discovery_before_automation = """
+The two scripts demonstrate the important pattern of understanding the landscape
+(what exists, what needs work) before building automation. This prevents automating
+incorrect assumptions and makes automation more robust.
+"""
+
+systems_thinking = """
+Rather than immediately jumping to automation, the scripts show:
+1. First understand: What projects exist? Which need ingestion?
+2. Then automate: Process the identified projects systematically
+"""
+
+##############################################################################
+# RECOMMENDATIONS FOR FUTURE CLASSIFICATIONS
+##############################################################################
+
+[recommendations]
+high_value_indicators = """
+Look for:
+- Meta-scripts that automate or analyze the development process itself
+- Discovery/inventory scripts that understand project structure
+- Batch processing automation that follows from discovery
+- Clean shell scripts with good error handling and output formatting
+- Workflows that show progression from reconnaissance to action
+"""
+
+workflow_patterns = """
+High-value workflow scripts demonstrate:
+- Discovery before automation
+- Status tracking (what's done vs what needs work)
+- Defensive programming (check before acting)
+- Clear output for human consumption
+- Self-documenting code structure
+"""
+
+small_focused_collections = """
+For very small collections (2 files) where all files demonstrate valuable patterns,
+100% selection rate is appropriate. Quality > quantity in selections.
+"""

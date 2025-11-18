@@ -1,0 +1,507 @@
+# Selection Index for python-appcore Scribbles
+#
+# This file catalogs selected scribbles from the python-appcore project
+# that demonstrate exceptional architectural thinking, systematic problem-solving,
+# and comprehensive analysis methodologies.
+#
+# Format: Table array of selections with:
+# - filename: Name of the selected file
+# - labels: Categorization tags (purpose, quality, tech, scope)
+# - description: What the script does
+# - selection_rationale: Why it was selected
+# - related_files: Connected artifacts (data, output, source)
+# - loc: Lines of code
+# - techniques: Key techniques demonstrated
+
+[metadata]
+project = "python-appcore"
+source_directory = "ingests/python-appcore"
+selections_created = "2025-11-18T22:21:00Z"
+total_ingested_files = 9
+total_selected = 6
+selection_rate = "66.7%"  # 6/9
+selector = "Claude Code (Sonnet 4.5)"
+
+# Selection criteria used:
+# - Architectural analysis documents with concrete before/after comparisons
+# - Systematic exploration of design alternatives with working code
+# - Validation prototypes that test multiple dimensions
+# - Bug analysis with clear problem demonstration
+# - Algorithm improvements with comprehensive testing
+# - Compatibility analysis tools with systematic approach
+
+[metadata.label_distribution]
+"purpose:analysis" = 2
+"purpose:exploration" = 1
+"purpose:test-poc" = 1
+"purpose:debug" = 1
+"purpose:refactor" = 1
+"quality:gem" = 3
+"quality:interesting" = 3
+"scope:comprehensive" = 4
+"scope:moderate" = 2
+
+##############################################################################
+# ARCHITECTURAL ANALYSIS DOCUMENTS (GEMS)
+##############################################################################
+
+[[selections]]
+filename = "cli-mixin-analysis.md"
+labels = [
+    "purpose:analysis",
+    "quality:gem",
+    "topic:architecture",
+    "topic:api-design",
+    "tech:documentation",
+    "scope:comprehensive",
+    "format:document"
+]
+description = "Architectural analysis of CLI mixin pattern with detailed before/after comparison, pros/cons, and implementation recommendations"
+selection_rationale = """
+EXCEPTIONAL architectural analysis document that demonstrates:
+- Clear problem statement (boilerplate pain points: 13 lines → 4 lines)
+- Multiple solution approaches with concrete code examples
+- Comprehensive pros/cons analysis
+- Concrete before/after ergonomics comparison (69% reduction in boilerplate)
+- Technical verification of viability (field merging, Tyro compatibility)
+- Actionable implementation recommendations
+
+The document shows:
+1. Initial incorrect assumption that was corrected through investigation
+2. Deep understanding of dataclass mechanics and metaclass behavior
+3. Practical ergonomics analysis with quantifiable metrics
+4. Clear recommendation with implementation strategy
+
+This is a model for how to document design decisions and architectural thinking.
+The before/after code examples make the value proposition immediately clear.
+
+Value: Model for architectural decision documentation.
+Shows how to document design evolution from problem to solution.
+Demonstrates quantifiable ergonomics analysis (line count reduction).
+"""
+related_files = [
+    "cli-mixin-experiments.py",
+    "cli-mixin-prototype.py"
+]
+loc = 129
+techniques = [
+    "problem decomposition",
+    "before/after comparison",
+    "quantifiable ergonomics analysis",
+    "pros/cons methodology",
+    "implementation roadmap"
+]
+
+##############################################################################
+# DESIGN EXPLORATION SCRIPTS (GEMS)
+##############################################################################
+
+[[selections]]
+filename = "cli-mixin-experiments.py"
+labels = [
+    "purpose:exploration",
+    "quality:gem",
+    "topic:api-design",
+    "topic:architecture",
+    "tech:async",
+    "lang:python",
+    "scope:comprehensive",
+    "format:script"
+]
+description = "Comprehensive exploration of four different CLI mixin patterns: basic, generic, protocol-based, and composition"
+selection_rationale = """
+Outstanding experimental script that systematically explores design space:
+- Four distinct approaches to the same problem (basic, generic, protocol, composition)
+- Each approach fully implemented with working code
+- Clear documentation of pros/cons for each pattern embedded in comments
+- Tests multiple inheritance strategies (mixin vs protocol vs composition)
+- Explores typing approaches (Generic[T], Protocol)
+- Considers composition as alternative to inheritance
+
+Demonstrates excellent software design exploration:
+1. Systematic coverage of design alternatives
+2. Concrete implementations, not just descriptions
+3. Clear trade-off analysis embedded in code comments
+4. Considers both theoretical and practical aspects (Tyro compatibility)
+
+The script is both a working prototype and a design document.
+Valuable for anyone designing ergonomic APIs or exploring patterns.
+
+Value: Model for systematic design space exploration.
+Shows how to evaluate multiple approaches with working code.
+Demonstrates comprehensive pattern evaluation.
+"""
+related_files = [
+    "cli-mixin-analysis.md",
+    "cli-mixin-prototype.py"
+]
+loc = 185
+techniques = [
+    "design space exploration",
+    "pattern comparison",
+    "multiple inheritance strategies",
+    "generic types",
+    "protocol types",
+    "composition patterns"
+]
+
+[[selections]]
+filename = "cli-mixin-prototype.py"
+labels = [
+    "purpose:test-poc",
+    "quality:gem",
+    "topic:testing",
+    "topic:api-design",
+    "tech:async",
+    "lang:python",
+    "scope:comprehensive",
+    "format:script"
+]
+description = "Practical prototype that tests CLI mixin pattern with actual Tyro integration, includes comprehensive test suite and ergonomics comparison"
+selection_rationale = """
+Exceptional prototype that goes beyond exploration to validation:
+- Actually tests the proposed solution with real dependencies (Tyro)
+- Multiple test dimensions: dataclass mechanics, Tyro compatibility, execution
+- Side-by-side comparison of mixin vs non-mixin approaches
+- Automated ergonomics analysis (line count, boilerplate eliminated)
+- Clear pass/fail assessment with actionable conclusion
+
+Shows mature testing approach:
+1. Test the mechanics (does it work?)
+2. Test the integration (does it work with Tyro?)
+3. Test the execution (does it actually run?)
+4. Test the ergonomics (is it actually better?)
+
+The script concludes with clear recommendation based on test results.
+This is a model for how to validate design proposals with working code.
+Great example of "trust but verify" approach to API design.
+
+Value: Template for validating architectural proposals.
+Shows how to test multiple dimensions of a solution.
+Demonstrates quantified ergonomics validation.
+"""
+related_files = [
+    "cli-mixin-analysis.md",
+    "cli-mixin-experiments.py"
+]
+loc = 273
+techniques = [
+    "multi-dimensional testing",
+    "integration testing",
+    "ergonomics quantification",
+    "side-by-side comparison",
+    "automated analysis",
+    "conclusion generation"
+]
+
+##############################################################################
+# BUG ANALYSIS & DEBUGGING SCRIPTS
+##############################################################################
+
+[[selections]]
+filename = "analyze_stdlib_paths.py"
+labels = [
+    "purpose:debug",
+    "quality:interesting",
+    "topic:bug-fix",
+    "topic:path-detection",
+    "lang:python",
+    "scope:minimal",
+    "format:script"
+]
+description = "Analysis script that demonstrates a bug in path detection logic that incorrectly skips third-party packages"
+selection_rationale = """
+Clear bug analysis with demonstration:
+- Identifies what should be skipped (stdlib) vs allowed (site-packages)
+- Shows current problematic logic
+- Proposes better logic with specific paths
+- Demonstrates the bug with concrete example
+- Uses emoji annotations (❌/✅) for visual problem identification
+
+Shows effective debugging communication:
+1. Clear problem statement
+2. Current behavior analysis
+3. Proposed solution with specifics
+4. Concrete demonstration of the issue
+
+The visual annotations make the bug immediately visible.
+Good example of analysis-driven debugging and clear problem exposition.
+
+Value: Model for bug demonstration and analysis.
+Shows how to communicate technical problems clearly.
+Demonstrates visual annotation for clarity.
+"""
+related_files = [
+    "improved_detection.py"
+]
+loc = 73
+techniques = [
+    "problem identification",
+    "current vs proposed logic comparison",
+    "concrete bug demonstration",
+    "visual annotation with emoji",
+    "path analysis"
+]
+
+##############################################################################
+# ALGORITHM REFACTORING SCRIPTS
+##############################################################################
+
+[[selections]]
+filename = "improved_detection.py"
+labels = [
+    "purpose:refactor",
+    "quality:interesting",
+    "topic:algorithm",
+    "topic:introspection",
+    "lang:python",
+    "scope:comprehensive",
+    "format:script"
+]
+description = "Improved package detection algorithm handling namespace packages with sys.modules-based boundary detection"
+selection_rationale = """
+Sophisticated solution to package detection problem:
+- Handles namespace packages correctly using sys.modules
+- Works backwards through dotted names to find package boundaries
+- Distinguishes packages (__path__) from modules
+- Includes comprehensive test suite with namespace package scenarios
+- Uses subprocess testing for realistic validation
+- Provides mock module for standalone testing
+
+Demonstrates advanced Python introspection:
+1. Frame walking with proper location detection
+2. Site-packages detection with proper precedence
+3. Namespace package handling via sys.modules
+4. Mock module for standalone testing
+
+Shows evolution from problem (analyze_stdlib_paths.py) to solution.
+Valuable for understanding Python package detection and namespace packages.
+The algorithm is well-documented with clear logic flow.
+
+Value: Reference for advanced package detection.
+Shows how to handle namespace packages correctly.
+Demonstrates comprehensive testing with subprocess isolation.
+"""
+related_files = [
+    "analyze_stdlib_paths.py"
+]
+loc = 241
+techniques = [
+    "frame introspection",
+    "sys.modules analysis",
+    "namespace package detection",
+    "backward iteration",
+    "subprocess testing",
+    "mock module creation"
+]
+
+##############################################################################
+# COMPATIBILITY ANALYSIS SCRIPTS
+##############################################################################
+
+[[selections]]
+filename = "terminal-detection.py"
+labels = [
+    "purpose:analysis",
+    "quality:interesting",
+    "topic:testing",
+    "topic:compatibility",
+    "tech:cli",
+    "lang:python",
+    "scope:moderate",
+    "format:script"
+]
+description = "Systematic terminal environment detection script for identifying Git Bash/Mintty terminals with Unicode issues"
+selection_rationale = """
+Comprehensive environmental analysis tool:
+- Collects platform information
+- Examines relevant environment variables (TERM, SHELL, MSYSTEM, etc.)
+- Tests encoding capabilities across multiple dimensions
+- Validates Unicode output with actual rendering test
+- Proposes multiple detection strategies (4 different heuristics)
+
+Shows systematic approach to compatibility issues:
+1. Gather all relevant information
+2. Test actual capabilities (Unicode rendering)
+3. Propose multiple detection heuristics
+4. Document what to look for
+
+Valuable debugging tool for terminal compatibility issues.
+The script serves as both diagnostic tool and documentation of the
+problem space. Good example of environmental debugging methodology.
+
+Value: Template for environmental compatibility analysis.
+Shows how to systematically diagnose terminal issues.
+Demonstrates multi-heuristic detection approach.
+"""
+related_files = []
+loc = 103
+techniques = [
+    "environment variable inspection",
+    "encoding detection",
+    "capability testing",
+    "multi-heuristic detection",
+    "diagnostic output generation"
+]
+
+##############################################################################
+# SUMMARY STATISTICS
+##############################################################################
+
+[statistics]
+total_selected = 6
+total_ingested = 9
+selection_rate = 66.7
+
+[statistics.by_purpose]
+analysis = 2
+exploration = 1
+"test-poc" = 1
+debug = 1
+refactor = 1
+
+[statistics.by_quality]
+gem = 3
+interesting = 3
+
+[statistics.by_scope]
+comprehensive = 4
+moderate = 2
+
+[statistics.by_topic]
+"api-design" = 3
+architecture = 3
+testing = 2
+"bug-fix" = 1
+algorithm = 1
+compatibility = 1
+
+[statistics.average_loc]
+# Lines of code statistics
+mean = 167
+median = 157
+min = 73
+max = 273
+
+##############################################################################
+# SELECTION INSIGHTS
+##############################################################################
+
+[insights]
+dominant_pattern = "Architectural thinking and systematic problem-solving"
+collection_focus = "CLI mixin trilogy demonstrates design evolution: analysis → exploration → validation"
+surprising_find = "High selection rate (67%) reflects exceptional quality of scribbles"
+unique_characteristic = "Complete design workflow from problem identification to validated solution"
+
+[insights.cli_mixin_trilogy]
+# The three CLI mixin files form an exceptional design workflow
+analysis_document = "cli-mixin-analysis.md articulates the problem and solution with metrics"
+exploration_script = "cli-mixin-experiments.py explores the design space systematically"
+validation_prototype = "cli-mixin-prototype.py validates the approach with working tests"
+
+workflow_value = """
+This trilogy demonstrates exemplary design thinking:
+1. Analysis: Identify problem, propose solution, analyze trade-offs
+2. Exploration: Systematically explore alternatives
+3. Validation: Test the proposal across multiple dimensions
+
+This pattern of analysis → exploration → validation is worth preserving and
+emulating in future work. It shows how scribbles can document the complete
+design process, not just final solutions.
+"""
+
+[insights.problem_solving_patterns]
+quantified_analysis = """
+cli-mixin-analysis.md shows how to make design decisions objective:
+- Line count reduction (13 lines → 4 lines, 69%)
+- Clear before/after examples
+- Measurable ergonomics improvement
+"""
+
+multi_angle_exploration = """
+cli-mixin-experiments.py demonstrates systematic design space exploration:
+- 4 different approaches implemented
+- Each with clear trade-offs documented
+- Both inheritance and composition considered
+"""
+
+comprehensive_validation = """
+cli-mixin-prototype.py shows multi-dimensional testing:
+- Dataclass mechanics
+- Library integration (Tyro)
+- Actual execution
+- Ergonomics quantification
+"""
+
+[insights.key_techniques_observed]
+architectural_analysis = ["cli-mixin-analysis.md"]
+design_space_exploration = ["cli-mixin-experiments.py"]
+validation_testing = ["cli-mixin-prototype.py"]
+bug_demonstration = ["analyze_stdlib_paths.py"]
+algorithm_improvement = ["improved_detection.py"]
+compatibility_analysis = ["terminal-detection.py"]
+
+[insights.not_selected]
+# Other files in ingests/python-appcore include:
+# - investigate_python_location.py
+# - debug_paths.py
+# - debug_coverage.py
+#
+# These were not selected due to:
+# - Superseded by more comprehensive approaches (improved_detection.py is better)
+# - Insufficient standalone context
+# - Routine debugging without novel techniques
+
+##############################################################################
+# RECOMMENDATIONS FOR FUTURE CLASSIFICATIONS
+##############################################################################
+
+[recommendations]
+high_value_indicators = """
+Exceptional value demonstrated by:
+- Complete design workflows (analysis → exploration → validation)
+- Quantifiable metrics (line counts, percentages)
+- Before/after comparisons with working code
+- Systematic exploration of alternatives
+- Multi-dimensional validation
+- Visual annotations for clarity (emoji, formatting)
+"""
+
+design_thinking_patterns = """
+Look for scribbles that show:
+1. Problem identification with clear metrics
+2. Solution exploration with multiple alternatives
+3. Validation across multiple dimensions
+4. Evolution from problem to tested solution
+"""
+
+trilogy_pattern = """
+The CLI mixin trilogy (analysis.md → experiments.py → prototype.py) represents
+an ideal pattern for design scribbles:
+- Document the thinking (analysis)
+- Explore the options (experiments)
+- Validate the choice (prototype)
+
+When multiple related scribbles exist, look for this progression pattern.
+"""
+
+quality_markers = """
+High-quality scribbles demonstrate:
+- Systematic methodology (not ad-hoc exploration)
+- Clear documentation of trade-offs
+- Quantifiable comparisons
+- Working code, not just proposals
+- Multi-angle analysis
+- Visual clarity (formatting, annotations)
+- Actionable conclusions
+"""
+
+selection_philosophy = """
+For projects with focused, high-quality scribbles like python-appcore,
+higher selection rates (60-70%) are appropriate when:
+- Files form coherent workflows
+- Each file demonstrates valuable techniques
+- Quality is consistently high across the collection
+
+Selection rate should reflect value density, not arbitrary quotas.
+"""
