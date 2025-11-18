@@ -19,14 +19,7 @@
 - All quality gates passed (linters, type checker, vulture, tests)
 - Manual testing validated all features
 
-### Known Issues
-- CLI interface hangs when invoked via `python -m lmscribbles ingest ...`
-- Direct instantiation works perfectly
-- Suspected tyro parsing issue with Annotated types
-- **NEW**: IngestCommand doesn't preserve source directory hierarchy (causes false duplicate warnings)
-- **NEW**: Tyro requires `--command.argument` prefix (should use `prefix_name=False`)
-
-See `.auxiliary/notes/issues.md` for detailed issue tracking.
+See `.auxiliary/notes/issues.md` for current issue tracking.
 
 ## Real Scribbles Analysis (python-librovore)
 
@@ -118,7 +111,7 @@ print('After:', state)
 - `inventory_analysis.json` (structured inventory data)
 - `mkdocs_search_results.json` (API response samples)
 
-**Value**: Medium to high - reference material for understanding patterns
+**Value**: Generally low - data files are usually uninteresting except when they contain synthetic test data. These samples are reference material for understanding patterns, which is moderately valuable
 
 #### 5. Batch Conversion/Refactoring Scripts
 **Examples**: `batch_convert_remaining_tests.py`, `update_query_tests.py`
@@ -205,8 +198,8 @@ Based on observed patterns, suggest these quality indicators:
 
 **Likely `quality:noise`**:
 - Duplicate or superseded test scripts
-- Failed experiments (if identifiable)
 - Temporary debugging scaffolding
+- Note: Failed experiments can still have value if they demonstrate novel approaches
 
 ### File Naming Patterns
 
@@ -218,10 +211,11 @@ Based on observed patterns, suggest these quality indicators:
 - `*-theme-*.html` - Theme samples (with theme name)
 - `batch_*.py` - Batch processing utilities
 
-**Implications for Auto-Classification**:
-- File naming provides strong hints for initial labeling
-- Can use patterns to suggest `purpose:*` labels
-- Theme names in filenames suggest `tech:*` labels
+**Implications for LLM-Driven Classification**:
+- File naming provides strong hints for LLMs to infer labels
+- Patterns can help LLMs suggest `purpose:*` labels
+- Theme names in filenames help LLMs suggest `tech:*` labels
+- Note: Classification is LLM-driven, not traditional heuristics/algorithms
 
 ### Multi-File Relationships
 
@@ -277,44 +271,37 @@ Based on observed patterns, suggest these quality indicators:
 
 #### Metadata Storage Strategy
 
-**Questions**:
-- Should metadata files be sidecar files (`.metadata.yaml` alongside each scribble)?
-- Or centralized index file per project (`ingests/project-name/.index.yaml`)?
-- How do we handle metadata for selections (symlinks to ingests)?
-- Should we version metadata schema for future evolution?
+**Approach**: Sibling TOML manifest files
+- Metadata stored in `selections/project-name.toml` (sibling to `selections/project-name/` directory)
+- Example: `selections/python-librovore.toml` for `selections/python-librovore/` contents
+- Do NOT place metadata inside `ingests/` or `selections/` directories
+- TOML format for human readability and structured data
+- SQLite catalog deferred to later phases
 
-**Proposed Metadata Schema** (preliminary):
-```yaml
-# Example: ingests/lm-scribbles/.index.yaml or per-file sidecar
-scribbles:
-  file-1.ext:
-    content_hash: "sha256:abc123..."
-    ingested_at: "2025-11-17T21:00:00Z"
-    size_bytes: 1024
-    source_path: "/original/path/file-1.ext"
-    labels:
-      - topic:architecture
-      - quality:gem
-      - language:python
-    notes: "Interesting approach to async CLI patterns"
-    classification_method: "manual|llm-assisted|auto"
-    llm_confidence: 0.85  # If LLM-classified
-```
+**Schema** (as demonstrated in `selections/python-librovore.toml`):
+```toml
+[metadata]
+project = "python-librovore"
+source_directory = "ingests/python-librovore"
+selections_created = "2025-11-17T22:38:00Z"
 
-**Alternative: Lightweight JSON Lines Format**:
-```jsonl
-{"file": "file-1.ext", "hash": "abc123", "labels": ["topic:architecture"], "notes": "..."}
-{"file": "file-2.ext", "hash": "def456", "labels": ["topic:testing"], "notes": "..."}
+[selections.script_name]
+labels = ["purpose:analysis", "quality:gem", "tech:async"]
+description = "Brief description of what the script does"
+selection_rationale = "Why this was selected, techniques used, value provided"
+related_files = ["data.json", "other_script.py"]
+loc = 176
 ```
 
 #### Label Taxonomy
 
-**Questions**:
-- Should we use namespaced labels (`topic:architecture`) or flat tags?
-- Pre-defined taxonomy vs. free-form tagging?
-- How to handle label evolution (renaming, merging, deprecation)?
+**Approach**: Namespaced labels (not flat tags)
+- Use `namespace:value` pattern to avoid high cardinality
+- Example: `purpose:analysis`, `quality:gem`, `tech:async`
+- Supports organized taxonomy evolution
+- Pre-defined taxonomy can emerge from LLM usage patterns
 
-**Proposed Taxonomy** (from architecture notes, with extensions):
+**Taxonomy** (from architecture notes and real scribbles analysis):
 
 **Source Context**:
 - `source:debug` - Debugging session output
@@ -345,232 +332,138 @@ scribbles:
 
 #### ClassifyCommand Design
 
-**Questions**:
-- Interactive mode (one file at a time with prompts)?
-- Batch mode (apply same labels to multiple files)?
-- LLM-assisted mode (suggest labels, user confirms)?
-- Support for bulk operations (e.g., "tag all Python files in project X")?
+**Purpose**: Assist LLMs in classifying and selecting scribbles
+- Command is used BY LLMs, not to assist users with LLM features
+- LLMs review scribbles and generate metadata (as demonstrated with python-librovore selection)
+- Command provides structured interface for LLMs to read/write TOML manifests
+- May support batch operations for LLM efficiency
 
-**Proposed Interface Ideas**:
+**LLM-Driven Workflow** (as demonstrated):
+1. LLM reviews scribbles in `ingests/project-name/`
+2. LLM selects high-value files based on content analysis
+3. LLM creates symlinks in `selections/project-name/`
+4. LLM generates `selections/project-name.toml` with metadata
+   - Labels, descriptions, selection rationale
+   - Related files, techniques, statistics
+
+**Potential Command Interface**:
 ```bash
-# Interactive single-file classification
-lmscribbles classify ingests/project-name/file.ext
+# Used by LLM to structure selection workflow
+lmscribbles classify --project python-librovore --review
 
-# Batch classification
-lmscribbles classify ingests/project-name/*.py --labels "lang:python,source:exploration"
-
-# LLM-assisted classification (suggest labels from content)
-lmscribbles classify ingests/project-name/file.ext --llm-assist
-
-# Review/update existing classifications
-lmscribbles classify --review --filter "quality:interesting"
+# LLM could batch-update metadata
+lmscribbles classify --update selections/python-librovore.toml
 ```
 
-**Implementation Considerations**:
-- Use `rich` prompts for interactive classification
-- LLM integration: Which model/API? (OpenAI, Anthropic, local?)
-- Prompt engineering: How to extract meaningful labels from scribble content?
-- Confidence scoring: How to indicate LLM classification confidence?
+**Note**: The classify command may be optional - LLMs can directly manipulate files and TOML as demonstrated
 
 ### 3. Selection Workflow (Phase 2b)
-**Objective**: Tools to promote files from `ingests/` → `selections/`.
+**Objective**: LLM-driven curation to promote files from `ingests/` → `selections/`.
 
-**Questions**:
-- Should selection be based on classification labels (e.g., "select all quality:gem")?
-- Interactive review mode with preview?
-- Preserve directory structure vs. flatten selections?
-- Handle selections metadata separately from ingests metadata?
+**LLM-Driven Approach** (as demonstrated):
+- LLM reviews all files in ingests directory
+- LLM applies judgment to identify high-value scribbles
+- LLM creates symlinks for selected files
+- LLM generates comprehensive TOML manifest with metadata
 
-**Proposed SelectCommand Interface**:
-```bash
-# Select by label query
-lmscribbles select --filter "quality:gem AND topic:architecture"
+**Demonstrated Workflow**:
+1. LLM reads scribbles from `ingests/project-name/`
+2. LLM analyzes content, patterns, techniques
+3. LLM creates `selections/project-name/` directory
+4. LLM creates relative symlinks to selected files
+5. LLM writes `selections/project-name.toml` with:
+   - Per-file labels, descriptions, rationale
+   - Statistics, relationships, insights
 
-# Interactive review mode
-lmscribbles select --interactive --filter "quality:interesting"
+**Selection Rate**: ~7% (14/190 for python-librovore)
+- Quality over quantity
+- LLM judgment identifies gems, novel approaches, valuable patterns
 
-# Preview without creating symlinks
-lmscribbles select --dry-run --filter "lang:python"
-```
+### 4. Search/Query and Configuration
 
-**Implementation Considerations**:
-- Symlink management (create, verify, cleanup broken links)
-- Metadata handling: Copy/reference ingests metadata?
-- Provenance tracking: Record why/when file was selected
+**Status**: Deferred until after taxonomy and classification are settled
+- Search/query functionality will be designed based on actual usage patterns
+- Configuration system will emerge from concrete needs
 
-### 4. Search/Query (Phase 2c)
-**Objective**: Query scribbles by content and metadata.
+## LLM Integration Strategy
 
-**Questions**:
-- Should search be hybrid (content + metadata)?
-- Use external tools (ripgrep, ag) or implement in Python?
-- Support for complex queries (boolean logic, regex)?
-- Output format: List files, show snippets, full content?
+**Approach**: LLMs work directly with the codebase (as demonstrated)
 
-**Proposed SearchCommand Interface**:
-```bash
-# Content search
-lmscribbles search "async.*await" --type python
+**What LLMs Do**:
+1. Read scribbles from `ingests/project-name/`
+2. Analyze content using their training (no special API integration needed)
+3. Apply judgment to identify valuable patterns, novel approaches, insights
+4. Create symlinks in `selections/project-name/`
+5. Write comprehensive TOML manifests with metadata
 
-# Metadata search
-lmscribbles search --labels "quality:gem" --project lm-scribbles
+**Demonstrated Workflow** (python-librovore selection):
+- LLM reviewed 190 files (143 Python scripts, 36 HTML, 7 JSON, 3 MD)
+- Selected 14 high-value files (~7% selection rate)
+- Created relative symlinks preserving original content
+- Generated detailed TOML with:
+  - Namespaced labels (purpose, quality, tech, scope)
+  - Selection rationale explaining value
+  - Related files, techniques, LOC statistics
+  - Summary statistics and insights
+  - Recommendations for future classifications
 
-# Hybrid search
-lmscribbles search "CLI patterns" --labels "topic:architecture"
+**No Special API Integration Needed**:
+- LLMs use their standard capabilities (reading, analyzing, writing)
+- TOML format is human-readable and LLM-friendly
+- Selection is conversational: human asks, LLM curates
+- No prompt templates or confidence scoring required
 
-# Date range filtering
-lmscribbles search --after 2025-11-01 --before 2025-11-30
-```
+**Benefits**:
+- Flexible: LLMs adapt approach based on scribble characteristics
+- Comprehensive: LLMs provide rich context and rationale
+- Evolving: Taxonomy emerges from actual usage patterns
+- Simple: No API keys, no special infrastructure
 
-**Implementation Considerations**:
-- Index content for faster search? (maybe defer to Phase 3+)
-- Integration with external tools vs. pure Python implementation
-- Result ranking/relevance scoring
+## Completed Validations
 
-### 5. Configuration System
-**Objective**: Externalize settings via `appcore` config.
+### Session Accomplishments
+1. ✅ Validated IngestCommand with real scribbles (python-librovore: 190 files)
+2. ✅ Designed and demonstrated metadata schema (TOML sibling manifests)
+3. ✅ Demonstrated LLM-driven selection workflow (~7% selection rate)
+4. ✅ Generated comprehensive metadata with labels, rationale, insights
+5. ✅ Documented findings and updated architecture understanding
 
-**Questions**:
-- What settings should be configurable?
-- Configuration file location/format (YAML, TOML)?
-- Environment variable overrides?
-
-**Proposed Configuration Settings**:
-```yaml
-# ~/.config/lm-scribbles/config.yaml or project-local config
-
-directories:
-  ingests: "./ingests"
-  selections: "./selections"
-  refinements: "./refinements"
-
-secrets:
-  check_enabled: true
-  plugins:
-    - Base64HighEntropyString
-    - KeywordDetector
-
-classification:
-  default_labels: []
-  llm_provider: "anthropic"  # or "openai", "local"
-  llm_model: "claude-sonnet-4"
-  llm_confidence_threshold: 0.7
-
-search:
-  default_output_format: "text"  # or "json"
-  max_results: 100
-```
-
-## Technical Investigations Needed
-
-### 1. CLI Hang Issue (High Priority)
-**Problem**: `python -m lmscribbles ingest ...` hangs, but direct instantiation works.
-
-**Investigation Steps**:
-1. Add debug logging to `__main__.py` and `cli.py` entry points
-2. Test with minimal tyro example to isolate issue
-3. Check tyro version compatibility with Annotated types
-4. Review vibelinter for differences in tyro usage
-5. Consider alternative CLI frameworks if tyro issues persist
-
-### 2. LLM Integration Strategy
-**Questions**:
-- Which LLM API to support initially? (Anthropic Claude, OpenAI, both?)
-- How to handle API authentication/credentials?
-- Prompt engineering: What context to provide for classification?
-- Token usage optimization: Full file content vs. snippets?
-- Fallback strategy if LLM API unavailable?
-
-**Proposed LLM Prompt Template** (for classification):
-```
-You are analyzing code scribbles (LLM-generated content) for classification.
-
-File: {filename}
-Content preview:
-```
-{content_preview}
-```
-
-Based on this content, suggest appropriate labels from these categories:
-- Source: debug, exploration, poc, investigation
-- Quality: gem, interesting, routine, noise
-- Topic: architecture, algorithm, api-design, bug-fix, testing, documentation
-- Language: python, rust, typescript, etc.
-
-Provide:
-1. Suggested labels (comma-separated)
-2. Confidence score (0-1)
-3. Brief reasoning
-
-Format as JSON.
-```
-
-### 3. Metadata Storage Performance
-**Considerations**:
-- File I/O overhead for per-file metadata vs. centralized index
-- Concurrent access patterns (multiple classify operations)
-- Metadata versioning and migration strategy
-- Backup and recovery (metadata in git vs. external storage)
-
-## Immediate Action Items
-
-### Session Priorities
-1. Fix CLI hang issue (enables proper user workflow testing)
-2. Validate IngestCommand with real scribbles from python-librovore or similar
-3. Design metadata schema and storage strategy
-4. Prototype ClassifyCommand basic implementation (no LLM initially)
-5. Document findings and update architecture notes
-
-### For Next Session
-- Results of CLI hang investigation
-- Validation results with real scribbles
-- Metadata schema proposal (with examples)
-- Basic ClassifyCommand implementation
-- Updated architecture decisions based on validation findings
+### Key Learnings
+- LLM-driven selection is practical and produces rich metadata
+- Sibling TOML manifests work well for structured metadata
+- Namespaced labels provide organized taxonomy
+- Selection quality over quantity (14/190 = 7.4%)
+- Real scribbles reveal valuable patterns for classification design
 
 ## Open Design Questions
 
-1. **Metadata Evolution**: How do we handle schema changes over time without breaking existing classifications?
+1. **Metadata Evolution**: How to handle schema changes over time without breaking existing classifications?
 
-2. **LLM Provider Abstraction**: Should we abstract LLM interactions to support multiple providers easily?
+2. **Refinements Workflow**: How does refinement work? Manual editing, LLM-assisted rewriting, or both?
 
-3. **Offline Mode**: Should classification/search work without LLM access (fallback to manual/keyword-based)?
+3. **Multi-project Relationships**: How to track relationships across scribbles from different projects?
 
-4. **Multi-user Workflows**: Future consideration for shared scribbles repositories?
+4. **Label Consolidation**: As taxonomy emerges, how to consolidate similar labels?
 
-5. **Refinements Workflow**: How does the refinement process work? Manual editing, LLM-assisted rewriting, or both?
+## Next Phase Priorities
 
-6. **Export/Import**: Should we support exporting classifications to other formats (JSON, CSV) for analysis?
+Based on validated approach:
 
-7. **Statistics/Reporting**: Value in tracking classification stats (most common labels, quality distribution, etc.)?
+1. **Fix IngestCommand Issues**:
+   - Preserve source directory hierarchy (Issue #1)
+   - Add `prefix_name=False` to tyro arguments (Issue #2)
 
-## Notes for Collaboration
+2. **Refine Classification Taxonomy**:
+   - Evolve labels based on more project selections
+   - Document label meanings and usage guidelines
+   - Consider cross-project label consistency
 
-**Strengths of Current Implementation**:
-- Clean separation of concerns (CLI, commands, results)
-- Strong typing with comprehensive type annotations
-- Self-rendering result objects (excellent pattern)
-- Robust error handling and reporting
-- Good testing foundation
+3. **Iterate on Selection Workflow**:
+   - Apply to more projects to validate approach
+   - Refine TOML schema based on actual needs
+   - Document selection patterns and heuristics
 
-**Areas to Explore**:
-- LLM integration patterns (new territory for this codebase)
-- Metadata management best practices
-- Interactive CLI workflows (prompts, confirmations)
-- Performance optimization for large scribble collections
-
-**Questions for Project Owner**:
-1. Is there a preferred LLM API for classification assistance?
-2. What's the typical size of scribble collections to expect?
-3. Are there existing classification schemes from other tools we should align with?
-4. Priority between fixing CLI hang vs. moving forward with validation?
-
-## Session Handoff Template
-
-For the next Claude Code session, I'll document:
-- [ ] CLI hang investigation results
-- [ ] Real scribble validation outcomes
-- [ ] Metadata schema decisions
-- [ ] ClassifyCommand progress
-- [ ] Any new architectural decisions or changes
-- [ ] Updated test results and quality gate status
+4. **Explore Refinements**:
+   - Design refinement workflow (LLM-assisted)
+   - Consider how refined scribbles differ from selections
+   - Determine refinement metadata needs
