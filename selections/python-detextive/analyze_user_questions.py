@@ -1,1 +1,1 @@
-../../ingests/python-detextive/scribbles/analyze_user_questions.py
+../../ingests/python-detextive/analyze_user_questions.py

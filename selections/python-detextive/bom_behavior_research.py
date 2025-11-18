@@ -1,1 +1,1 @@
-../../ingests/python-detextive/scribbles/bom_behavior_research.py
+../../ingests/python-detextive/bom_behavior_research.py

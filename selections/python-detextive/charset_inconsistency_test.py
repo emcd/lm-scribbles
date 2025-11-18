@@ -1,1 +1,1 @@
-../../ingests/python-detextive/scribbles/charset_inconsistency_test.py
+../../ingests/python-detextive/charset_inconsistency_test.py

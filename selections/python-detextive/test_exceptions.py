@@ -1,1 +1,1 @@
-../../ingests/python-detextive/scribbles/test_exceptions.py
+../../ingests/python-detextive/test_exceptions.py

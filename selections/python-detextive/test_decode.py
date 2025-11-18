@@ -1,1 +1,1 @@
-../../ingests/python-detextive/scribbles/test_decode.py
+../../ingests/python-detextive/test_decode.py

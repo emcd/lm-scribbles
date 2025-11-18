@@ -1,1 +1,1 @@
-../../ingests/python-detextive/scribbles/debug_unicode_corruption.py
+../../ingests/python-detextive/debug_unicode_corruption.py

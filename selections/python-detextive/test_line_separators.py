@@ -1,1 +1,1 @@
-../../ingests/python-detextive/scribbles/test_line_separators.py
+../../ingests/python-detextive/test_line_separators.py

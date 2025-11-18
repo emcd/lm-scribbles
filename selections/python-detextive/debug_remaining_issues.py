@@ -1,1 +1,1 @@
-../../ingests/python-detextive/scribbles/debug_remaining_issues.py
+../../ingests/python-detextive/debug_remaining_issues.py
