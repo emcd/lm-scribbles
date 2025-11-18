@@ -1,0 +1,436 @@
+# Selection Index for python-dynadoc Scribbles
+#
+# This file catalogs selected scribbles from the python-dynadoc project
+# that demonstrate systematic debugging methodology, comprehensive investigation
+# techniques, and problem-solving progression for a specific technical issue.
+#
+# Format: Table array of selections with:
+# - filename: Name of the selected file
+# - labels: Categorization tags (purpose, quality, tech, scope)
+# - description: What the script does
+# - selection_rationale: Why it was selected
+# - related_files: Connected artifacts (data, output, source)
+# - loc: Lines of code
+# - techniques: Key techniques demonstrated
+
+[metadata]
+project = "python-dynadoc"
+source_directory = "ingests/python-dynadoc"
+selections_created = "2025-11-18T06:00:00Z"
+total_ingested_files = 11
+total_selected = 7
+selection_rate = "63.6%"  # 7/11
+selector = "Claude Code (Sonnet 4.5)"
+
+# Selection criteria used:
+# - Comprehensive investigation scripts showing systematic debugging
+# - Cross-version compatibility testing
+# - Progression from simple to complex analysis
+# - Novel debugging techniques (monkey patching, introspection)
+# - Minimal reproductions for bug isolation
+# - All files focused on single issue: ForwardRef/stringified annotations
+
+# UNIQUE COLLECTION CHARACTERISTIC:
+# Unlike python-librovore (diverse topics), ALL python-dynadoc scribbles
+# investigate ONE specific bug: how dynadoc handles ForwardRef objects
+# and stringified annotations when `from __future__ import annotations` is used.
+# Higher selection rate (64% vs 7%) is justified due to:
+# - Focused, coherent investigation narrative
+# - All files demonstrate valuable debugging methodology
+# - Shows progression of problem-solving approach
+# - No files are "noise" - all contribute to understanding
+
+[metadata.label_distribution]
+"purpose:debug" = 5
+"purpose:test-poc" = 2
+"quality:gem" = 3
+"quality:interesting" = 4
+"scope:comprehensive" = 2
+"scope:moderate" = 4
+"scope:minimal" = 1
+
+##############################################################################
+# COMPREHENSIVE ANALYSIS SCRIPTS (GEMS)
+##############################################################################
+
+[[selections]]
+filename = "test_stringified_annotations.py"
+labels = [
+    "purpose:debug",
+    "quality:gem",
+    "topic:type-annotations",
+    "tech:introspection",
+    "scope:comprehensive",
+    "format:script"
+]
+description = "Comprehensive analysis of stringified annotation handling across multiple inspect.get_annotations() modes (default, eval_str=False, eval_str=True)"
+selection_rationale = """
+Most comprehensive investigation in the collection:
+- Tests three different modes of inspect.get_annotations()
+- Examines annotation objects at multiple levels (Annotated wrapper and ForwardRef args)
+- Checks for __forward_arg__ attribute presence across scenarios
+- Tests both with and without dynadoc decorator
+- Includes detailed output of type information for each scenario
+- Shows systematic exploration of annotation behavior
+
+Value: Excellent example of comprehensive systematic testing.
+Demonstrates how to thoroughly investigate Python's annotation system behavior.
+Most complete reference for understanding the full scope of the problem.
+"""
+related_files = []
+loc = 143
+techniques = [
+    "multi-mode annotation testing",
+    "systematic attribute inspection",
+    "annotation wrapper unwrapping",
+    "before/after decorator comparison"
+]
+
+[[selections]]
+filename = "test_forwardref_compatibility.py"
+labels = [
+    "purpose:debug",
+    "quality:gem",
+    "topic:cross-version-compatibility",
+    "tech:introspection",
+    "tech:testing",
+    "scope:comprehensive",
+    "format:script"
+]
+description = "Cross-Python-version ForwardRef compatibility testing examining attribute differences (__forward_arg__ vs _name) across Python versions and typing vs typing_extensions"
+selection_rationale = """
+Exceptional cross-version investigation:
+- Tests ForwardRef object creation and attributes
+- Checks for version-specific attribute names (__forward_arg__, _name, etc.)
+- Compares inspect.get_annotations vs typing_extensions.get_annotations
+- Tests both typing.ForwardRef and typing_extensions.ForwardRef
+- Examines Annotated context specifically
+- Reports Python version information for context
+- Shows defensive programming for attribute access
+
+Value: Critical for understanding cross-version compatibility issues.
+Demonstrates how to write version-agnostic code through systematic attribute testing.
+Essential reference for handling ForwardRef across Python 3.9-3.13+.
+"""
+related_files = []
+loc = 97
+techniques = [
+    "cross-version testing",
+    "attribute existence checking",
+    "defensive attribute access",
+    "version reporting",
+    "library comparison (typing vs typing_extensions)"
+]
+
+[[selections]]
+filename = "debug_doctest_behavior.py"
+labels = [
+    "purpose:debug",
+    "quality:gem",
+    "topic:doctest-debugging",
+    "tech:monkey-patching",
+    "tech:introspection",
+    "scope:moderate",
+    "format:script"
+]
+description = "Complex investigation into doctest execution environment using monkey patching to trace dynadoc internal annotation processing with debug output"
+selection_rationale = """
+Sophisticated debugging approach:
+- Simulates doctest environment with exec() and future imports
+- Monkey patches dynadoc internals (_access_annotations) to trace execution
+- Shows before/after debugging comparison
+- Demonstrates how to inspect internal library behavior
+- Uses detailed print statements to understand data flow
+- Tests both with and without debugging enabled
+
+Value: Excellent example of advanced debugging techniques.
+Shows how to trace execution through library internals when source inspection isn't enough.
+Demonstrates monkey patching as a diagnostic tool (not for production).
+"""
+related_files = []
+loc = 86
+techniques = [
+    "monkey patching for debugging",
+    "execution tracing",
+    "environment simulation",
+    "internal API introspection",
+    "before/after comparison"
+]
+
+##############################################################################
+# SUPPORTING INVESTIGATION SCRIPTS (INTERESTING)
+##############################################################################
+
+[[selections]]
+filename = "test_forwardref_fix.py"
+labels = [
+    "purpose:test-poc",
+    "quality:interesting",
+    "topic:bug-fix",
+    "tech:monkey-patching",
+    "tech:testing",
+    "scope:moderate",
+    "format:script"
+]
+description = "Tests a proposed fix for ForwardRef handling by monkey patching _access_annotations to force eval_str=True and comparing results"
+selection_rationale = """
+Solution-oriented investigation:
+- Demonstrates the fix approach (forcing eval_str=True)
+- Shows before/after comparison with monkey patching
+- Tests whether fix resolves the issue
+- Uses controlled experiment methodology
+- Validates proposed solution empirically
+
+Value: Shows transition from problem diagnosis to solution testing.
+Demonstrates how to validate fixes using controlled experiments.
+Important for understanding the solution approach, not just the problem.
+"""
+related_files = [
+    "debug_doctest_behavior.py",
+    "test_stringified_annotations.py"
+]
+loc = 64
+techniques = [
+    "solution validation",
+    "controlled experiment",
+    "monkey patching for fix testing",
+    "before/after fix comparison"
+]
+
+[[selections]]
+filename = "proper_future_annotations_test.py"
+labels = [
+    "purpose:debug",
+    "quality:interesting",
+    "topic:type-annotations",
+    "tech:introspection",
+    "scope:moderate",
+    "format:script"
+]
+description = "Proper test with from __future__ import annotations at module level, testing both default and eval_str=True modes with detailed ForwardRef inspection"
+selection_rationale = """
+Well-structured investigation:
+- Uses proper future import placement (module level, not exec'd)
+- Tests both annotation retrieval modes
+- Includes detailed ForwardRef attribute inspection
+- Shows proper test structure for the problem domain
+- Unwraps Annotated to examine inner ForwardRef objects
+
+Value: Good example of proper test structure for annotations issue.
+Shows correct future import usage and systematic annotation examination.
+Cleaner than exec-based approaches for most scenarios.
+"""
+related_files = [
+    "test_stringified_annotations.py"
+]
+loc = 57
+techniques = [
+    "proper future import usage",
+    "multi-mode testing",
+    "nested annotation unwrapping",
+    "attribute inspection with fallbacks"
+]
+
+[[selections]]
+filename = "inspect_forwardref.py"
+labels = [
+    "purpose:debug",
+    "quality:interesting",
+    "topic:type-introspection",
+    "tech:introspection",
+    "scope:minimal",
+    "format:script"
+]
+description = "Focused exploration of ForwardRef object structure and attributes, checking for __forward_arg__ vs _name across different contexts"
+selection_rationale = """
+Focused attribute investigation:
+- Direct ForwardRef object creation and inspection
+- Systematic attribute checking (public and private)
+- Tests both standalone ForwardRef and within Annotated context
+- Shows attribute discovery technique with dir() and hasattr()
+- Concise, focused investigation
+
+Value: Good reference for ForwardRef object structure.
+Shows how to discover object attributes systematically.
+Useful template for inspecting unfamiliar type objects.
+"""
+related_files = [
+    "test_forwardref_compatibility.py"
+]
+loc = 39
+techniques = [
+    "direct object inspection",
+    "attribute enumeration",
+    "defensive attribute access",
+    "context-aware testing (standalone vs Annotated)"
+]
+
+[[selections]]
+filename = "test_direct_forwardref_to_renderer.py"
+labels = [
+    "purpose:test-poc",
+    "quality:interesting",
+    "topic:renderer-testing",
+    "tech:monkey-patching",
+    "tech:testing",
+    "scope:minimal",
+    "format:script"
+]
+description = "Direct test of dynadoc renderer's ForwardRef handling by monkey patching _format_annotation and passing ForwardRef objects directly"
+selection_rationale = """
+Targeted component testing:
+- Tests renderer component in isolation
+- Monkey patches to observe inputs
+- Tests both typing.ForwardRef and typing_extensions.ForwardRef
+- Bypasses decorator to test renderer directly
+- Isolates renderer behavior from annotation retrieval
+
+Value: Demonstrates component isolation technique.
+Shows how to test specific parts of processing pipeline independently.
+Good example of targeted debugging vs end-to-end testing.
+"""
+related_files = [
+    "debug_renderer_path.py"
+]
+loc = 28
+techniques = [
+    "component isolation testing",
+    "monkey patching for observation",
+    "direct API testing",
+    "library variant testing (typing vs typing_extensions)"
+]
+
+##############################################################################
+# SUMMARY STATISTICS
+##############################################################################
+
+[statistics]
+total_selected = 7
+total_ingested = 11
+selection_rate = 63.6
+
+[statistics.by_purpose]
+debug = 5
+"test-poc" = 2
+
+[statistics.by_quality]
+gem = 3
+interesting = 4
+
+[statistics.by_scope]
+comprehensive = 2
+moderate = 4
+minimal = 1
+
+[statistics.by_tech]
+introspection = 5
+testing = 4
+"monkey-patching" = 3
+"type-annotations" = 2
+
+[statistics.average_loc]
+# Lines of code statistics (for selected files)
+mean = 73
+median = 64
+min = 28
+max = 143
+
+##############################################################################
+# COLLECTION INSIGHTS
+##############################################################################
+
+[insights]
+dominant_pattern = "Systematic investigation of single issue: ForwardRef/stringified annotations bug"
+collection_focus = "All files investigate same problem from different angles"
+methodology_strength = "Demonstrates excellent debugging progression: minimal reproduction -> comprehensive analysis -> solution testing"
+unique_characteristic = "Unusually focused collection - 100% of files address one specific technical issue"
+
+[insights.investigation_progression]
+# Shows how investigation evolved from simple to complex
+phase_1_minimal_reproduction = [
+    "inspect_forwardref.py",
+    "test_direct_forwardref_to_renderer.py"
+]
+phase_2_comprehensive_analysis = [
+    "test_stringified_annotations.py",
+    "test_forwardref_compatibility.py",
+    "proper_future_annotations_test.py"
+]
+phase_3_environment_simulation = [
+    "debug_doctest_behavior.py"
+]
+phase_4_solution_testing = [
+    "test_forwardref_fix.py"
+]
+
+[insights.debugging_techniques_demonstrated]
+monkey_patching = [
+    "debug_doctest_behavior.py",
+    "test_forwardref_fix.py",
+    "test_direct_forwardref_to_renderer.py"
+]
+systematic_attribute_inspection = [
+    "inspect_forwardref.py",
+    "test_forwardref_compatibility.py",
+    "test_stringified_annotations.py"
+]
+cross_version_testing = [
+    "test_forwardref_compatibility.py"
+]
+component_isolation = [
+    "test_direct_forwardref_to_renderer.py"
+]
+multi_mode_testing = [
+    "test_stringified_annotations.py",
+    "proper_future_annotations_test.py"
+]
+
+[insights.problem_domain]
+core_issue = "ForwardRef string extraction for annotation rendering"
+python_feature = "PEP 563 stringified annotations (from __future__ import annotations)"
+version_sensitivity = "Python 3.9-3.13+ have different ForwardRef attributes"
+library_components = "dynadoc introspection + renderer integration"
+
+##############################################################################
+# NON-SELECTED FILES (Reference)
+##############################################################################
+
+[insights.not_selected]
+# These files were not selected but are noted for completeness:
+#
+# - minimal_doctest_reproduction.py (1.4K) - Simpler version of debug_doctest_behavior.py
+# - doctest_exact_repro.py (1.5K) - Similar to minimal_doctest_reproduction.py
+# - debug_renderer_path.py (856 bytes) - Simpler version of test_direct_forwardref_to_renderer.py
+# - test_treenode.py (531 bytes) - Minimal self-referential test case
+#
+# Not selected because they are superseded by more comprehensive versions,
+# but all files contributed to the investigation process.
+
+##############################################################################
+# RECOMMENDATIONS FOR FUTURE CLASSIFICATIONS
+##############################################################################
+
+[recommendations]
+focused_collections = """
+For small, focused collections like python-dynadoc (all files investigating
+same issue), use higher selection rates (60-70%) vs diverse collections (5-10%).
+The progression and methodology are as valuable as individual insights.
+"""
+
+debugging_methodology = """
+Look for scribbles that demonstrate:
+- Systematic progression from simple to complex
+- Multiple investigation angles (reproduction, analysis, fix)
+- Defensive programming (cross-version, attribute checking)
+- Component isolation techniques
+- Before/after comparison methodology
+"""
+
+quality_indicators = """
+High-value debugging scribbles show:
+- Comprehensive testing across multiple scenarios
+- Cross-version compatibility awareness
+- Monkey patching for observation (not modification)
+- Minimal reproductions alongside comprehensive analysis
+- Clear investigation narrative/progression
+"""
