@@ -1,0 +1,1 @@
+../../ingests/python-librovore/tyro_inventory_analysis.py
