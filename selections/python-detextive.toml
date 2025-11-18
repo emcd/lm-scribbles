@@ -1,0 +1,503 @@
+# Selection Index for python-detextive Scribbles
+#
+# This file catalogs selected scribbles from the python-detextive project
+# that demonstrate valuable patterns, novel approaches, or insightful analysis.
+#
+# Format: Table array of selections with:
+# - filename: Name of the selected file
+# - labels: Categorization tags (purpose, quality, tech, scope)
+# - description: What the script does
+# - selection_rationale: Why it was selected
+# - related_files: Connected artifacts (data, output, source)
+# - loc: Lines of code
+# - techniques: Key techniques demonstrated
+
+[metadata]
+project = "python-detextive"
+source_directory = "ingests/python-detextive"
+selections_created = "2025-11-18T05:58:00Z"
+total_ingested_files = 31
+total_selected = 11
+selection_rate = "35.5%"  # 11/31
+selector = "Claude Code (Sonnet 4.5)"
+
+# Selection criteria used:
+# - Comprehensive analysis with actionable insights and recommendations
+# - Systematic debugging methodologies showing problem-solving process
+# - Well-structured test suites demonstrating thorough API coverage
+# - Research scripts documenting investigation methodology
+# - Architectural proposals with clear trade-off analysis
+
+[metadata.label_distribution]
+"purpose:analysis" = 4
+"purpose:debug" = 2
+"purpose:test-poc" = 4
+"purpose:research" = 1
+"quality:gem" = 5
+"quality:interesting" = 6
+"scope:comprehensive" = 6
+"scope:moderate" = 5
+
+##############################################################################
+# COMPREHENSIVE ANALYSIS SCRIPTS
+##############################################################################
+
+[[selections]]
+filename = "analyze_user_questions.py"
+labels = [
+    "purpose:analysis",
+    "quality:gem",
+    "topic:charset-detection",
+    "topic:bom-handling",
+    "topic:confidence-thresholds",
+    "scope:comprehensive",
+    "format:script"
+]
+description = "Comprehensive analysis addressing three specific user questions: UTF-8 as inference charset, BOM handling correctness, and confidence value thresholds"
+selection_rationale = """
+Exceptional analytical approach:
+- Systematically addresses 3 distinct user questions in separate sections
+- Tests UTF-8 inference proposals with benefits/implementation ideas
+- Validates BOM handling across multiple scenarios (plain UTF-8, manual BOM, UTF-8-SIG, double BOM)
+- Analyzes confidence values across diverse content types (ASCII, Unicode, Cyrillic, Chinese, Math symbols)
+- Provides actionable threshold recommendations with trigger rate calculations
+- Categorizes results by confidence ranges (perfect, high, medium, low, very_low)
+- Documents trade-offs clearly (e.g., "0.95: too aggressive", "0.70: conservative")
+
+Value: Perfect example of turning user questions into systematic analysis.
+Shows how to explore solutions with clear benefits/drawbacks for each approach.
+Demonstrates categorization and statistical analysis for threshold tuning.
+"""
+related_files = []
+loc = 166
+techniques = ["problem decomposition", "scenario testing", "statistical analysis", "threshold tuning", "trade-off documentation"]
+
+[[selections]]
+filename = "chardet_confidence_analysis.py"
+labels = [
+    "purpose:analysis",
+    "quality:gem",
+    "topic:charset-detection",
+    "topic:corruption-detection",
+    "scope:comprehensive",
+    "format:script"
+]
+description = "Measures chardet confidence levels for Windows-1252 on Unicode content, identifies corruption patterns, and analyzes confidence thresholds to prevent corruption"
+selection_rationale = """
+Comprehensive corruption analysis:
+- Tests specific case from bug report (Finding 4: 'Unicode ★ symbols')
+- Analyzes confidence levels across various Unicode content types
+- Identifies when detected charset causes corruption vs correct decoding
+- Tests problematic cases to determine safe confidence thresholds
+- Analyzes byte patterns that confuse chardet into Windows-1252 detection
+- Provides detailed corruption summary with affected cases
+- Tests both short and long content, various Unicode ranges
+
+Value: Excellent example of bug investigation methodology.
+Shows systematic testing across content types to find corruption patterns.
+Demonstrates how to analyze algorithm behavior to inform threshold decisions.
+"""
+related_files = []
+loc = 192
+techniques = ["bug reproduction", "pattern analysis", "corruption detection", "byte sequence analysis", "threshold analysis"]
+
+[[selections]]
+filename = "none_charset_analysis.py"
+labels = [
+    "purpose:analysis",
+    "quality:gem",
+    "topic:charset-detection",
+    "topic:trial-decode",
+    "topic:architecture",
+    "scope:comprehensive",
+    "format:script"
+]
+description = "Analyzes cases where charset detection returns None, tests current trial decode strategy, and proposes improved handling approach with MIME type context"
+selection_rationale = """
+Architectural proposal with systematic analysis:
+- Identifies specific cases where charset detection fails (empty, binary, high-entropy)
+- Tests current trial decode behavior and identifies gaps
+- Analyzes MIME type context influence on detection strategy
+- Proposes complete improved strategy with clear logic flow:
+  1. Confidence-based decision (use result if high confidence)
+  2. None handling with MIME type awareness
+  3. Trial decode sequence with graceful degradation
+- Documents benefits of proposed approach
+- Shows understanding of edge cases and fallback strategies
+
+Value: Demonstrates architectural thinking with edge case handling.
+Perfect example of proposing improvements with clear before/after comparison.
+Shows how to design graceful degradation paths.
+"""
+related_files = []
+loc = 174
+techniques = ["edge case analysis", "architectural proposal", "fallback strategy design", "MIME type analysis", "graceful degradation"]
+
+[[selections]]
+filename = "analyze_mimetype_charset_problem.py"
+labels = [
+    "purpose:analysis",
+    "quality:interesting",
+    "topic:mimetype-detection",
+    "topic:validation",
+    "scope:minimal",
+    "format:script"
+]
+description = "Analyzes false positive problem in _detect_mimetype_from_charset where binary data that UTF-8 can decode gets incorrectly classified as text/plain"
+selection_rationale = """
+Focused false positive analysis:
+- Tests specific false positive cases (binary, null bytes, invalid UTF-8)
+- Checks if UTF-8 decode succeeds on binary content
+- Tests validation profiles (TEXTUAL, TERMINAL_SAFE) to catch false positives
+- Contrasts with legitimate text/plain cases
+- Clear problem demonstration with expected vs actual behavior
+
+Value: Good example of focused problem analysis.
+Shows how to test validation strategies against false positives.
+Demonstrates validation profile usage.
+"""
+related_files = []
+loc = 58
+techniques = ["false positive testing", "validation profile testing", "binary vs text discrimination"]
+
+##############################################################################
+# DEBUG & PROBLEM INVESTIGATION SCRIPTS
+##############################################################################
+
+[[selections]]
+filename = "debug_unicode_corruption.py"
+labels = [
+    "purpose:debug",
+    "quality:gem",
+    "topic:charset-detection",
+    "topic:trial-decode",
+    "topic:corruption-analysis",
+    "scope:comprehensive",
+    "format:script"
+]
+description = "Deep debugging of why Unicode corruption persists despite trial decode being triggered, analyzing the trial decode process step-by-step"
+selection_rationale = """
+Masterful debugging methodology:
+- Multi-angle debugging approach with 4 distinct investigation steps:
+  1. Trial decode process step-by-step
+  2. Main decode() function behavior
+  3. Trial codecs execution order
+  4. Charset promotions effect
+- Simulates internal logic manually to understand behavior
+- Tests individual codecs to verify which would succeed
+- Identifies root cause: codec order means FromInference (Windows-1252) succeeds first
+- Shows how to debug complex workflows by breaking them into stages
+- Uses detailed print statements to trace execution flow
+
+Value: Exceptional example of systematic debugging.
+Shows how to trace through library internals by simulating behavior.
+Demonstrates root cause analysis through multiple investigation angles.
+Perfect template for debugging complex charset/decode issues.
+"""
+related_files = []
+loc = 192
+techniques = ["step-by-step debugging", "manual simulation", "root cause analysis", "execution flow tracing", "multi-angle investigation"]
+
+[[selections]]
+filename = "debug_remaining_issues.py"
+labels = [
+    "purpose:debug",
+    "quality:gem",
+    "topic:edge-cases",
+    "topic:bom-handling",
+    "topic:trial-decode",
+    "scope:comprehensive",
+    "format:script"
+]
+description = "Debugs three remaining issues: empty content handling, BOM handling with charset promotions, and default value supplements"
+selection_rationale = """
+Multi-issue debugging with solution proposals:
+- Organizes debugging into clear sections for each issue
+- Empty content: Tests detection/inference/decode, references TODO comments
+- BOM issue: Tests multiple BOM scenarios, traces through promotion logic
+- Default values: Tests supplement fallback logic, identifies implementation gaps
+- Analyzes trial codec order fix with 3 solution options:
+  1. Reverse order (UserDefault first)
+  2. Add UTF-8 as explicit codec
+  3. Add validation during trial decode
+- Tests proposed solutions manually to verify effectiveness
+- Provides clear problem statements and solution trade-offs
+
+Value: Shows how to organize multi-issue debugging sessions.
+Demonstrates solution proposal with manual verification.
+Good example of identifying implementation gaps (supplement fallback not implemented).
+"""
+related_files = []
+loc = 166
+techniques = ["multi-issue debugging", "solution proposal", "manual verification", "trade-off analysis", "gap identification"]
+
+##############################################################################
+# COMPREHENSIVE TEST SUITES
+##############################################################################
+
+[[selections]]
+filename = "test_exceptions.py"
+labels = [
+    "purpose:test-poc",
+    "quality:interesting",
+    "topic:exception-handling",
+    "topic:api-testing",
+    "scope:comprehensive",
+    "format:script"
+]
+description = "Comprehensive exception handling test suite covering hierarchy, detection failures, validation failures, and exception messages"
+selection_rationale = """
+Thorough exception testing approach:
+- Tests 7 distinct exception categories with dedicated test functions
+- Validates exception hierarchy (inheritance relationships)
+- Tests all major exception types (CharsetDetectFailure, MimetypeDetectFailure, ContentDecodeFailure, TextInvalidity)
+- Verifies exception messages include context (location, charset, etc.)
+- Uses emoji indicators (✅ ⚠️ ❌) for clear visual feedback
+- Adaptable to pytest (noted in docstring)
+- Comprehensive issue collection and reporting
+- Tests both expected exceptions and unexpected edge cases
+
+Value: Excellent template for exception handling test suites.
+Shows how to systematically test error conditions.
+Demonstrates message validation and hierarchy testing.
+"""
+related_files = []
+loc = 271
+techniques = ["exception hierarchy testing", "message validation", "issue aggregation", "visual feedback", "systematic API testing"]
+
+[[selections]]
+filename = "test_decode.py"
+labels = [
+    "purpose:test-poc",
+    "quality:interesting",
+    "topic:decode-functionality",
+    "topic:api-testing",
+    "scope:comprehensive",
+    "format:script"
+]
+description = "Comprehensive decode functionality test suite covering basic decode, location hints, validation profiles, behaviors, HTTP headers, edge cases, and round-trips"
+selection_rationale = """
+Complete decode API coverage:
+- Tests 8 distinct decode scenarios with dedicated test functions
+- Basic decode: UTF-8, BOM handling, Unicode, JSON, empty content
+- Location hints: Various file extensions and paths
+- Validation profiles: TEXTUAL vs TERMINAL_SAFE
+- Custom behaviors: trial_decode, text_validate, error handling
+- HTTP Content-Type: charset extraction from headers
+- Edge cases: large content, whitespace-only, mixed line endings, binary
+- Round-trip consistency: encode → decode should match original
+- Uses ✅ ⚠️ ❌ indicators for clear results
+- Comprehensive issue tracking
+
+Value: Perfect example of thorough API testing.
+Shows how to test multiple parameter combinations.
+Demonstrates round-trip validation pattern.
+"""
+related_files = []
+loc = 284
+techniques = ["API surface testing", "parameter combination testing", "round-trip validation", "edge case coverage", "behavior customization testing"]
+
+[[selections]]
+filename = "test_line_separators.py"
+labels = [
+    "purpose:test-poc",
+    "quality:interesting",
+    "topic:line-separators",
+    "topic:api-testing",
+    "scope:comprehensive",
+    "format:script"
+]
+description = "Comprehensive line separator test suite covering detection (bytes/text), normalization, nativization, edge cases, and consistency"
+selection_rationale = """
+Thorough line separator testing:
+- Tests 6 distinct aspects with dedicated test functions
+- Detection from bytes: LF, CRLF, CR, mixed endings
+- Detection from text: Same scenarios as bytes
+- Normalization: Universal line ending conversion
+- Nativization: Conversion to specific formats (LF/CRLF/CR)
+- Edge cases: Very long content, many breaks, alternating separators
+- Consistency: Validates bytes vs text detection produces same results
+- Tests Unicode content with line separators
+- Clear expected vs actual comparisons
+
+Value: Excellent example of feature-complete testing.
+Shows how to test dual APIs (bytes vs text) for consistency.
+Demonstrates normalization and conversion testing patterns.
+"""
+related_files = []
+loc = 231
+techniques = ["dual API testing", "normalization testing", "consistency validation", "edge case coverage", "format conversion testing"]
+
+[[selections]]
+filename = "charset_inconsistency_test.py"
+labels = [
+    "purpose:test-poc",
+    "quality:interesting",
+    "topic:charset-detection",
+    "topic:consistency-testing",
+    "scope:comprehensive",
+    "format:script"
+]
+description = "Tests for inconsistencies between detect_charset and infer_charset methods across various content types and contexts"
+selection_rationale = """
+Systematic consistency testing:
+- Compares two detection methods (detect_charset vs infer_charset) across 11 test cases
+- Tests multiple inconsistency types:
+  - Charset value differences
+  - Confidence charset differences
+  - Confidence level differences
+- Context-dependent testing: mimetype, location, HTTP headers, defaults
+- Edge case testing: BOM, low confidence, ASCII vs UTF-8 promotion
+- Comprehensive inconsistency tracking and reporting
+- Tests both basic and confidence versions of each method
+
+Value: Shows how to test API consistency between similar methods.
+Demonstrates systematic comparison methodology.
+Good template for finding API inconsistencies.
+"""
+related_files = []
+loc = 207
+techniques = ["consistency testing", "API comparison", "context variation testing", "inconsistency tracking", "edge case analysis"]
+
+##############################################################################
+# RESEARCH & INVESTIGATION SCRIPTS
+##############################################################################
+
+[[selections]]
+filename = "bom_behavior_research.py"
+labels = [
+    "purpose:research",
+    "quality:interesting",
+    "topic:bom-handling",
+    "topic:codec-behavior",
+    "topic:standards-research",
+    "scope:moderate",
+    "format:script"
+]
+description = "Research script investigating BOM handling behavior in Python codecs and web standards, testing utf-8 vs utf-8-sig codec differences"
+selection_rationale = """
+Systematic research methodology:
+- Tests Python codec behavior with BOM content:
+  - Encoding: utf-8 vs utf-8-sig
+  - Decoding: How each codec handles BOM presence/absence
+  - BOM preservation vs stripping
+- Documents web standards research:
+  - RFC 3629 (UTF-8)
+  - Unicode Standard
+  - HTML5, HTTP RFCs, JSON RFC, XML Spec
+  - Records each standard's BOM recommendations
+- Tests BOM in different contexts:
+  - Empty string with BOM
+  - BOM at start vs middle vs multiple BOMs
+  - Round-trip behavior
+
+Value: Excellent example of standards research methodology.
+Shows how to systematically test codec behavior.
+Documents external standards for reference.
+"""
+related_files = []
+loc = 105
+techniques = ["codec behavior testing", "standards research", "round-trip testing", "context variation", "documentation compilation"]
+
+##############################################################################
+# SUMMARY STATISTICS
+##############################################################################
+
+[statistics]
+total_selected = 11
+total_ingested = 31
+selection_rate = 35.5
+
+[statistics.by_purpose]
+analysis = 4
+debug = 2
+"test-poc" = 4
+research = 1
+
+[statistics.by_quality]
+gem = 5
+interesting = 6
+
+[statistics.by_scope]
+comprehensive = 6
+moderate = 5
+
+[statistics.by_topic]
+"charset-detection" = 7
+"bom-handling" = 3
+"trial-decode" = 3
+"api-testing" = 3
+"exception-handling" = 1
+"validation" = 2
+"corruption-detection" = 1
+"mimetype-detection" = 1
+
+[statistics.average_loc]
+# Lines of code statistics
+mean = 165
+median = 174
+min = 58
+max = 284
+
+##############################################################################
+# SELECTION INSIGHTS
+##############################################################################
+
+[insights]
+dominant_pattern = "Systematic analysis and debugging methodologies with clear problem decomposition"
+valuable_minority = "Comprehensive test suites demonstrating thorough API coverage"
+surprising_find = "High selection rate (35.5%) - many scribbles demonstrate exceptional analytical depth"
+project_focus = "Character set detection and text decoding library (python-detextive)"
+
+[insights.key_themes_observed]
+unicode_corruption = ["chardet_confidence_analysis.py", "debug_unicode_corruption.py", "analyze_user_questions.py"]
+bom_handling = ["analyze_user_questions.py", "debug_remaining_issues.py", "bom_behavior_research.py"]
+trial_decode_strategy = ["none_charset_analysis.py", "debug_unicode_corruption.py", "debug_remaining_issues.py"]
+comprehensive_testing = ["test_exceptions.py", "test_decode.py", "test_line_separators.py"]
+consistency_validation = ["charset_inconsistency_test.py"]
+
+[insights.problem_solving_patterns]
+multi_angle_debugging = "debug_unicode_corruption.py demonstrates investigating same problem from 4 different angles"
+question_driven_analysis = "analyze_user_questions.py shows systematic decomposition of user questions into testable scenarios"
+threshold_tuning = "chardet_confidence_analysis.py and analyze_user_questions.py demonstrate statistical analysis for threshold selection"
+architectural_proposals = "none_charset_analysis.py shows clear before/after logic flow proposals"
+
+[insights.selection_criteria_applied]
+high_value_indicators = [
+    "Comprehensive analysis with actionable recommendations",
+    "Systematic debugging showing problem-solving process",
+    "Well-structured test suites with clear organization",
+    "Research documenting investigation methodology",
+    "Architectural proposals with trade-off analysis"
+]
+
+selection_philosophy = """
+Selected scripts that demonstrate exceptional analytical depth and problem-solving
+methodology. Focus on scribbles that teach techniques, not just test features.
+Prioritized scripts showing systematic approaches that can serve as templates
+for similar work on other projects.
+"""
+
+##############################################################################
+# RECOMMENDATIONS FOR FUTURE WORK
+##############################################################################
+
+[recommendations]
+unselected_gems_to_revisit = [
+    "test_inference.py",
+    "test_user_changes.py",
+    "test_latest_changes.py",
+    "test_charset_detection.py"
+]
+
+reasoning = """
+Several unselected test files (7.0-7.8K) may contain valuable patterns but weren't
+read during this selection session. These could be gems worth reviewing in a
+future classification round if more context about the project's evolution is needed.
+"""
+
+label_evolution_notes = """
+- The 'topic:' labels were more specific here than in python-librovore due to focused domain
+- Consider adding 'pattern:multi-angle-debugging' for scripts like debug_unicode_corruption.py
+- 'topic:standards-research' could be useful for scripts documenting external standards
+"""
