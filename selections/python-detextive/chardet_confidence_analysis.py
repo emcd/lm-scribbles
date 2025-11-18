@@ -1,0 +1,1 @@
+../../ingests/python-detextive/scribbles/chardet_confidence_analysis.py

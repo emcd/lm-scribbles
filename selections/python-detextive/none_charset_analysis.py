@@ -1,0 +1,1 @@
+../../ingests/python-detextive/scribbles/none_charset_analysis.py

@@ -1,0 +1,1 @@
+../../ingests/python-detextive/scribbles/charset_inconsistency_test.py
