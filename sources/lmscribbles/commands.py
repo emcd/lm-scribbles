@@ -43,14 +43,16 @@ def _discover_source_files(
 
         Returns tuples of (base_path, file_path) where base_path is used
         to calculate relative paths for preserving directory structure.
+        Excludes .gitignore files from discovery.
     '''
     for location in source_paths:
         path = __.Path( location )
         if path.is_file( ):
-            yield ( path.parent, path )
+            if path.name != '.gitignore':
+                yield ( path.parent, path )
         elif path.is_dir( ):
             for item in path.rglob( '*' ):
-                if item.is_file( ):
+                if item.is_file( ) and item.name != '.gitignore':
                     yield ( path, item )
         else:
             raise _exceptions.FileIngestionFailure( str( path ) )
