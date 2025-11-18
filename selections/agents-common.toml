@@ -1,0 +1,61 @@
+[metadata]
+project = "agents-common"
+source_directory = "ingests/agents-common"
+selections_created = "2025-11-18T22:21:00Z"
+total_files_reviewed = 12
+files_selected = 2
+selection_rate = 0.167
+
+[selections.codex-config]
+labels = ["format:document", "quality:gem", "purpose:reference", "scope:comprehensive", "tech:configuration"]
+description = "Comprehensive configuration documentation for Codex CLI tool covering all config options, MCP servers, profiles, and model providers"
+selection_rationale = """
+This is an exceptional reference document that demonstrates:
+- Comprehensive coverage of a complex configuration system
+- Clear examples for every configuration option
+- Multiple configuration mechanisms (CLI flags, config file, profiles)
+- Advanced features like MCP server integration, OpenTelemetry, sandboxing
+- Practical examples for Azure, Ollama, and custom providers
+- Well-structured with clear hierarchy and cross-references
+
+The document serves as both user documentation and a design pattern reference for
+configuration systems. Shows thoughtful design with multiple levels of override
+(CLI > profile > config file > defaults) and extensive customization options.
+"""
+related_files = []
+loc = 827
+
+[selections.test_generation]
+labels = ["format:script", "quality:interesting", "purpose:test-poc", "scope:minimal", "tech:testing", "lang:python"]
+description = "Test script for agentsmgr content generation system, validates template generation to temporary directory"
+selection_rationale = """
+Demonstrates debugging approach for testing the agentsmgr content generation pipeline:
+- Loads configuration from YAML profiles
+- Tests ContentGenerator instantiation
+- Validates generation to temporary directory
+- Uses tree command to visualize output structure
+- Good error handling with traceback
+
+Shows practical testing pattern for file generation systems and configuration-driven
+workflows. Useful for understanding how to debug template/generation systems.
+"""
+related_files = ["data/agentsmgr/profiles/answers-default.yaml"]
+loc = 36
+
+[summary]
+selection_insights = """
+The agents-common project contains configuration management and testing code.
+Selected items represent:
+1. High-quality reference documentation (codex-config.md)
+2. Practical testing patterns for generation systems (test_generation.py)
+
+Other files in the project include debug scripts and test POCs that were not
+selected due to limited context or routine nature.
+"""
+
+recommendations_for_future = """
+Look for:
+- Comprehensive documentation files that serve as both reference and design patterns
+- Test scripts that demonstrate debugging techniques or validation patterns
+- Configuration examples that show complex system design
+"""

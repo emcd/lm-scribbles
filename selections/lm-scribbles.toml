@@ -1,0 +1,62 @@
+[metadata]
+project = "lm-scribbles"
+source_directory = "ingests/lm-scribbles"
+selections_created = "2025-11-18T22:21:00Z"
+total_files_reviewed = 2
+files_selected = 2
+selection_rate = 1.0
+
+[selections.ingest-all]
+labels = ["format:script", "quality:interesting", "purpose:automation", "scope:minimal", "tech:shell", "lang:bash"]
+description = "Batch ingestion script that automates ingesting scribbles from multiple projects using a predefined list"
+selection_rationale = """
+Demonstrates practical automation pattern for batch operations:
+- Iterates over predefined list of projects
+- Checks for scribbles directory existence
+- Calls lmscribbles ingest command for each project
+- Clean output with section separators
+
+Shows the evolution from discovery (find-projects-to-ingest.sh) to automation.
+Useful pattern for batch processing workflows and project management automation.
+The script is self-documenting with clear structure and error handling.
+"""
+related_files = ["find-projects-to-ingest.sh"]
+loc = 36
+
+[selections.find-projects-to-ingest]
+labels = ["format:script", "quality:interesting", "purpose:analysis", "scope:minimal", "tech:shell", "lang:bash"]
+description = "Discovery script that scans for projects with scribbles, counts files, and identifies which need ingestion"
+selection_rationale = """
+Demonstrates valuable discovery/inventory pattern:
+- Scans base directory for all projects
+- Checks for scribbles subdirectories
+- Counts files (excluding .gitignore)
+- Identifies already-ingested vs needs-ingestion status
+- Clean tabular output
+
+This is the reconnaissance phase that informs the automation script.
+Shows good systems thinking: understand what exists before automating.
+Useful pattern for project auditing and inventory management.
+"""
+related_files = ["ingest-all.sh"]
+loc = 38
+
+[summary]
+selection_insights = """
+The lm-scribbles project contains meta-automation scripts for the scribbles system itself.
+Both files were selected (100% selection rate) because they demonstrate:
+1. Discovery-then-automate workflow pattern
+2. Practical shell scripting for project management
+3. Clean, self-documenting code structure
+
+These scripts show the bootstrapping process for the lm-scribbles system and provide
+useful patterns for anyone building similar project management automation.
+"""
+
+recommendations_for_future = """
+Look for:
+- Meta-scripts that automate or analyze the development process itself
+- Discovery/inventory scripts that understand project structure
+- Batch processing automation that follows from discovery
+- Clean shell scripts with good error handling and output formatting
+"""
