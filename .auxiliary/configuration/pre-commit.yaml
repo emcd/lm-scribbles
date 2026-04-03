@@ -31,8 +31,6 @@ repos:
     fail_fast: true
   - id: check-json
     name: 'Validate: JSON Files'
-    exclude: |
-      ^ingests/.*
   - id: check-toml
     name: 'Validate: TOML Files'
   - id: check-yaml
