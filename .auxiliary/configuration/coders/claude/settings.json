@@ -3,6 +3,7 @@
     "BASH_DEFAULT_TIMEOUT_MS": 1800000,
     "BASH_MAX_TIMEOUT_MS": 1800000,
     "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": 1,
+    "CLAUDE_CODE_DISABLE_BACKGROUND_TASKS": 1,
     "CLAUDE_CODE_DISABLE_TERMINAL_TITLE": 1,
     "DISABLE_NON_ESSENTIAL_MODEL_CALLS": 1
   },
@@ -39,6 +40,15 @@
   },
   "permissions": {
     "auto_allow": [
+      "mcp__agentmux__list",
+      "mcp__agentmux__look",
+      "mcp__agentmux__send",
+      "mcp__context7__get-library-docs",
+      "mcp__context7__resolve-library-id",
+      "mcp__nb__help",
+      "mcp__nb__nb",
+      "Bash(hatch run *)",
+      "Bash(hatch --env develop run *)",
       "Bash(awk *)",
       "Bash(cat *)",
       "Bash(cut *)",
@@ -60,6 +70,7 @@
       "Bash(gh run list *)",
       "Bash(gh run view *)",
       "Bash(gh run watch *)",
+      "Bash(gh search issues *)",
       "Bash(gh status *)",
       "Bash(git add *)",
       "Bash(git branch *)",
@@ -68,8 +79,6 @@
       "Bash(git show *)",
       "Bash(git status)",
       "Bash(grep *)",
-      "Bash(hatch run python *)",
-      "Bash(hatch --env develop run *)",
       "Bash(head *)",
       "Bash(ls *)",
       "Bash(ps *)",
@@ -80,15 +89,7 @@
       "Bash(tail *)",
       "Bash(uniq *)",
       "Bash(wc *)",
-      "Bash(which *)",
-      "mcp__context7__get-library-docs",
-      "mcp__context7__resolve-library-id",
-      "mcp__pyright__definition",
-      "mcp__pyright__diagnostics",
-      "mcp__pyright__edit_file",
-      "mcp__pyright__hover",
-      "mcp__pyright__references",
-      "mcp__pyright__rename_symbol"
+      "Bash(which *)"
     ]
   },
   "sandbox": {

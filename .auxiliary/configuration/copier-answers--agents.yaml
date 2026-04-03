@@ -1,8 +1,10 @@
 # Changes here will be overwritten by Copier
-_commit: v1.0a5-13-g76bf705
+_commit: v1.0a10-1-gee4eb93
 _src_path: gh:emcd/agents-common
 coders:
 - claude
+- codex
+- gemini
 - opencode
 instructions_sources:
 -   files:
@@ -12,5 +14,7 @@ instructions_sources:
 instructions_target: .auxiliary/instructions
 languages:
 - python
+project_bundle_name: infrastructure
 project_name: lm-scribbles
 provide_instructions: true
+support_local_models: true
