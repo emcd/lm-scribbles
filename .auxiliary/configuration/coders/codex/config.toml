@@ -1,5 +1,5 @@
-model = "gpt-5.3-codex"
-model_reasoning_effort = "high"
+model = "gpt-5.5"
+model_reasoning_effort = "medium"
 personality = "friendly"
 
 approval_policy = "on-request"
@@ -9,9 +9,6 @@ trust_level = "trusted"
 # web_search = "cached"
 
 [features]
-# Temporary mitigation for Bubblewrap/symlink approval-loop regressions.
-# Related issues: #14936 and #14694.
-use_legacy_landlock = true
 # Keep reviewer routing explicit: always surface approval requests to user.
 guardian_approval = false
 
