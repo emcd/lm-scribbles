@@ -18,7 +18,6 @@ inject_foundations: true
 package_name: lmscribbles
 project_name: lm-scribbles
 pypy_versions:
-- '3.10'
 - '3.11'
 python_version_min: '3.10'
 python_versions:
